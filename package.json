@@ -1,0 +1,35 @@
+{
+    "name": "colour-log",
+    "version": "0.0.1",
+    "description": "Pretty prints strings to console if it contains valid JSON",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Qarj/colour-log.git"
+    },
+    "keywords": [
+        "colour",
+        "log",
+        "json",
+        "pretty",
+        "print",
+        "console",
+        "cli",
+        "terminal",
+        "debug",
+        "color",
+        "parse"
+    ],
+    "author": "Qarj",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Qarj/colour-log/issues"
+    },
+    "homepage": "https://github.com/Qarj/colour-log#readme",
+    "devDependencies": {
+        "jest": "^29.3.1"
+    }
+}
