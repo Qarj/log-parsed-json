@@ -1,6 +1,6 @@
 {
     "name": "log-parsed-json",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Pretty prints strings to console if it contains valid JSON",
     "main": "index.js",
     "scripts": {
@@ -8,7 +8,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Qarj/colour-log.git"
+        "url": "git+https://github.com/Qarj/log-parsed-json.git"
     },
     "keywords": [
         "colour",
@@ -26,9 +26,9 @@
     "author": "Qarj",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/Qarj/colour-log/issues"
+        "url": "https://github.com/Qarj/log-parsed-json/issues"
     },
-    "homepage": "https://github.com/Qarj/colour-log#readme",
+    "homepage": "https://github.com/Qarj/log-parsed-json#readme",
     "devDependencies": {
         "jest": "^29.3.1"
     }
