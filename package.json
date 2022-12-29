@@ -1,5 +1,5 @@
 {
-    "name": "colour-log",
+    "name": "log-parsed-json",
     "version": "0.0.1",
     "description": "Pretty prints strings to console if it contains valid JSON",
     "main": "index.js",
