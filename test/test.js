@@ -3,6 +3,8 @@ const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
 
+fs.rmdirSync('./test/temp', { maxRetries: 10 });
+
 beforeEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
@@ -73,8 +75,15 @@ test('should log inspect string output with colours', (done) => {
     testRunner(positiveAssertions, negativeAssertions, done, false);
 });
 
-test('should log broken json followed by correct json', (done) => {
+test('should log broken json string followed by correct json', (done) => {
     setTestHelperArguments({ value: 'text { "test": "bad  { "test": "good" } some text' });
+    const positiveAssertions = ['"test"', '32m'];
+    const negativeAssertions = [];
+    testRunner(positiveAssertions, negativeAssertions, done, false);
+});
+
+test('should log broken json prmitive followed by correct json', (done) => {
+    setTestHelperArguments({ value: 'text { "test": 123  { "test": "good" } some text' });
     const positiveAssertions = ['"test"', '32m'];
     const negativeAssertions = [];
     testRunner(positiveAssertions, negativeAssertions, done, false);
@@ -85,6 +94,12 @@ const testRunner = (postiveAssertions, negativeAssertions, done, stripAnsi = tru
 
     const testAppFilePath = path.join(__dirname, './testHelper.js');
     const testApp = spawn('node', [testAppFilePath]);
+    try {
+        fs.unlinkSync(path.join(__dirname, './testHelperCalls.json'));
+    } catch (e) {}
+    try {
+        fs.unlinkSync('./test/testHelperCalls.json');
+    } catch (e) {}
 
     testApp.stdout.on('data', async (data) => {
         const finish = () => {
@@ -99,7 +114,7 @@ const testRunner = (postiveAssertions, negativeAssertions, done, stripAnsi = tru
         calls.called++;
         const iAmCallNumber = calls.called;
         fs.writeFileSync(path.join(__dirname, './testHelperCalls.json'), JSON.stringify(calls));
-        await sleep(5); // expect all console.log calls to be done
+        await sleep(6); // expect all console.log calls to be done
         try {
             calls = JSON.parse(fs.readFileSync(path.join(__dirname, './testHelperCalls.json'), 'utf8'));
         } catch (e) {}

@@ -10,6 +10,7 @@ function getCheckpoint() {
 }
 
 function setCheckpoint() {
+    if (debug) console.log('setCheckpoint', position, inspected[position]);
     checkpoint = position;
     checkpointQuoted = quoted;
 }
@@ -44,6 +45,7 @@ function toArrayOfPlainStringsOrJson(string) {
             try {
                 eatObject();
             } catch (e) {
+                if (debug) console.log('error root eat object', e, position, inspected[position]);
                 quoted = checkpointQuoted;
                 position = checkpoint;
             }
@@ -198,10 +200,11 @@ function eatCloseBracket() {
 }
 
 function eatPrimitive() {
+    setCheckpoint();
     if (debug) console.log('eatPrimitive', position, inspected[position]);
-    while (inspected[position] !== ',' && inspected[position] !== '}' && inspected[position] !== ']') {
+    const primitiveRegex = /^[0-9a-zA-Z-]/;
+    while (inspected[position] === primitiveRegex.test(inspected[position])) {
         quoted += inspected[position];
-        console.log('eatPrimitive', position, inspected[position]);
         position++;
     }
 }

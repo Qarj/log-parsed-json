@@ -32,7 +32,7 @@
     },
     "homepage": "https://github.com/Qarj/log-parsed-json#readme",
     "jest": {
-        "testTimeout": 100
+        "testTimeout": 1000
     },
     "devDependencies": {
         "jest": "^29.3.1"

@@ -3,6 +3,7 @@
 testHelper.json
 testHelperArguments.json
 testHelperCalls.json
+temp/
 
 # Logs
 logs
