@@ -13,5 +13,6 @@
 -   [ ] accept multiple arguments - but how to pass options?
 -   [ ] handle undefined arguments
 -   [ ] log compliant json with colours
+-   [ ] indentation
 
 ## Done

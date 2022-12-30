@@ -1,10 +1,12 @@
 {
     "name": "log-parsed-json",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "Pretty prints strings to console if it contains valid JSON",
     "main": "index.js",
     "scripts": {
-        "test": "jest"
+        "test": "jest",
+        "pj": "jest ./parseJson.test.js",
+        "p": "jest ./test/test.js"
     },
     "repository": {
         "type": "git",

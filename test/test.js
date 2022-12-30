@@ -24,7 +24,7 @@ test('log function is a function', (done) => {
     done();
 });
 
-test('log function logs a string', (done) => {
+test.skip('log function logs a string', (done) => {
     const positiveAssertions = ['abcd'];
     const negativeAssertions = [];
     setTestHelperArguments({ value: 'abcd' });
@@ -64,6 +64,13 @@ test('log function logs an array', (done) => {
     const negativeAssertions = ["''", '{', '}'];
     setTestHelperArguments({ value: ['test'] });
     testRunner(positiveAssertions, negativeAssertions, done);
+});
+
+test('should log inspect string output with colours', (done) => {
+    setTestHelperArguments({ value: "{ test: 'test', array: ['test', { test: 'test' }] }" });
+    const positiveAssertions = ['32m'];
+    const negativeAssertions = [];
+    testRunner(positiveAssertions, negativeAssertions, done, false);
 });
 
 const testRunner = (postiveAssertions, negativeAssertions, done, stripAnsi = true) => {
