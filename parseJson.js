@@ -2,10 +2,27 @@ let position;
 let inspected;
 let quoted;
 let debug = false;
+let checkpoint;
+let checkpointQuoted;
+
+function getCheckpoint() {
+    return checkpoint;
+}
+
+function setCheckpoint() {
+    checkpoint = position;
+    checkpointQuoted = quoted;
+}
+
+function setPosition(newPosition) {
+    position = newPosition;
+}
 
 function toString(string) {
     inspected = string;
     position = 0;
+    checkpoint = 0;
+    checkpointQuoted = '';
     quoted = '';
     eatObject();
     return quoted;
@@ -15,13 +32,23 @@ function toArrayOfPlainStringsOrJson(string) {
     const result = [];
     inspected = string;
     position = 0;
+    checkpoint = 0;
+    checkpointQuoted = '';
     while (position < inspected.length) {
         quoted = '';
         eatPlainText();
         result.push(quoted);
         quoted = '';
         if (position >= inspected.length) break;
-        if (inspected[position] === '{') eatObject();
+        if (inspected[position] === '{') {
+            try {
+                eatObject();
+            } catch (e) {
+                quoted = checkpointQuoted;
+                position = checkpoint;
+            }
+        }
+
         result.push(quoted);
     }
 
@@ -127,6 +154,7 @@ function eatValue() {
 }
 
 function eatString() {
+    setCheckpoint();
     if (debug) console.log('eatString', position, inspected[position]);
     let quote = inspected[position];
     quoted += '"';
@@ -193,4 +221,4 @@ function eatComma() {
     position++;
 }
 
-module.exports = { toString, toArrayOfPlainStringsOrJson };
+module.exports = { getCheckpoint, setPosition, toString, toArrayOfPlainStringsOrJson };

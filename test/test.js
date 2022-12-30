@@ -73,6 +73,13 @@ test('should log inspect string output with colours', (done) => {
     testRunner(positiveAssertions, negativeAssertions, done, false);
 });
 
+test('should log broken json followed by correct json', (done) => {
+    setTestHelperArguments({ value: 'text { "test": "bad  { "test": "good" } some text' });
+    const positiveAssertions = ['"test"', '32m'];
+    const negativeAssertions = [];
+    testRunner(positiveAssertions, negativeAssertions, done, false);
+});
+
 const testRunner = (postiveAssertions, negativeAssertions, done, stripAnsi = true) => {
     // https://nikhilvijayan.com/testing-stdout-in-node-js-jest
 
