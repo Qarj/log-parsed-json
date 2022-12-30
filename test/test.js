@@ -8,7 +8,11 @@ try {
     for (const file of files) {
         fs.unlinkSync(path.join('./test/temp', file));
     }
+} catch (e) {}
+try {
     fs.rmdirSync('./test/temp', { maxRetries: 10 });
+} catch (e) {}
+try {
     fs.mkdirSync('./test/temp');
 } catch (e) {}
 
