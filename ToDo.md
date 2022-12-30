@@ -7,6 +7,7 @@
 -   [x] tests need to fail reliably
 -   [x] strip ansi codes from output for some assertions
 -   [x] change simple objects to be values
+-   [x] mix text and simple json
 -   [ ] cope with trailing comma in object
 -   [ ] cope with escaped quotes in strings
 -   [ ] cope with concatenated strings?
@@ -14,5 +15,6 @@
 -   [ ] handle undefined arguments
 -   [ ] log compliant json with colours
 -   [ ] indentation
+-   [ ] eat whitespace on \s
 
 ## Done

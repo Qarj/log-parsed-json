@@ -46,8 +46,9 @@ function main(object) {
 
     // const final = plainText + jsonString;
     // if (final.length > 0) console.log(final);
-    jsonString = parseJson.toString(text);
-    logPretty(jsonString);
+    let array = parseJson.toArrayOfPlainStringsOrJson(text);
+    for (const item of array) logPretty(item);
+    console.log();
 }
 
 function logPretty(obj) {
@@ -56,7 +57,7 @@ function logPretty(obj) {
         if (typeof obj === 'string') jsonString = JSON.parse(obj);
         process.stdout.write(util.inspect(jsonString, { showHidden: false, depth: null, colors: true }));
     } catch (e) {
-        console.log(obj);
+        process.stdout.write(obj);
     }
 }
 

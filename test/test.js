@@ -24,7 +24,7 @@ test('log function is a function', (done) => {
     done();
 });
 
-test.skip('log function logs a string', (done) => {
+test('log function logs a string', (done) => {
     const positiveAssertions = ['abcd'];
     const negativeAssertions = [];
     setTestHelperArguments({ value: 'abcd' });

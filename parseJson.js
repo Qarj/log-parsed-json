@@ -11,6 +11,30 @@ function toString(string) {
     return quoted;
 }
 
+function toArrayOfPlainStringsOrJson(string) {
+    const result = [];
+    inspected = string;
+    position = 0;
+    while (position < inspected.length) {
+        quoted = '';
+        eatPlainText();
+        result.push(quoted);
+        quoted = '';
+        if (position >= inspected.length) break;
+        if (inspected[position] === '{') eatObject();
+        result.push(quoted);
+    }
+
+    return result;
+}
+
+function eatPlainText() {
+    while (inspected[position] !== '{' && position < inspected.length) {
+        quoted += inspected[position];
+        position++;
+    }
+}
+
 function eatObject() {
     if (debug) console.log('eatObject', position, inspected[position]);
     eatWhitespace();
@@ -160,4 +184,4 @@ function eatComma() {
     position++;
 }
 
-module.exports = { toString };
+module.exports = { toString, toArrayOfPlainStringsOrJson };
