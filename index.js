@@ -1,12 +1,14 @@
 const util = require('util');
 
 function main(object) {
+    if (typeof object === 'number') return console.log(object);
+    if (typeof object === 'boolean') return console.log(object);
     if (typeof object === 'object') {
         logPretty(object);
         return console.log();
     }
 
-    const text = getStringFromObject(object);
+    const text = object;
 
     let eatingJson = false;
     let jsonString = '';
@@ -43,13 +45,6 @@ function main(object) {
 
     const final = plainText + jsonString;
     if (final.length > 0) console.log(final);
-}
-
-function getStringFromObject(object) {
-    if (typeof object === 'string') return object;
-    if (typeof object === 'number') return object.toString();
-    if (typeof object === 'boolean') return object.toString();
-    return util.inspect(object, { showHidden: false, depth: null, colors: false });
 }
 
 function logPretty(obj) {
