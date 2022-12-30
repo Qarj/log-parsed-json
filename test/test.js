@@ -3,11 +3,11 @@ const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
 
-const files = fs.readdirSync('./test/temp');
-for (const file of files) {
-    fs.unlinkSync(path.join('./test/temp', file));
-}
 try {
+    const files = fs.readdirSync('./test/temp');
+    for (const file of files) {
+        fs.unlinkSync(path.join('./test/temp', file));
+    }
     fs.rmdirSync('./test/temp', { maxRetries: 10 });
     fs.mkdirSync('./test/temp');
 } catch (e) {}
