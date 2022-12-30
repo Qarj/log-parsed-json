@@ -1,6 +1,6 @@
 const log = require('./index.js');
 
-let obj = 'real json {"value":["closing brace }"]}';
+let obj = 'real json {"value":["double quote \\"test\\""]}';
 
 console.log(obj);
 gap();

@@ -9,7 +9,7 @@
 -   [x] change simple objects to be values
 -   [x] mix text and simple json
 -   [ ] cope with trailing comma in object
--   [ ] cope with escaped quotes in strings
+-   [x] cope with escaped quotes in strings
 -   [ ] cope with concatenated strings?
 -   [ ] cope with double quotes in strings that were originally inside single quoted strings
 -   [ ] cope with double quotes in keys that were originally inside single quoted keys

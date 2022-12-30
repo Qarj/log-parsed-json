@@ -132,10 +132,18 @@ function eatString() {
     quoted += '"';
     position++;
     while (inspected[position] !== quote) {
+        eatCharOrEscapedChar();
+    }
+    quoted += '"';
+    position++;
+}
+
+function eatCharOrEscapedChar() {
+    if (inspected[position] === '\\') {
         quoted += inspected[position];
         position++;
     }
-    quoted += '"';
+    quoted += inspected[position];
     position++;
 }
 
