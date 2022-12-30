@@ -46,20 +46,27 @@ test('log function logs a boolean', (done) => {
 });
 
 test('log function logs an object', (done) => {
-    const positiveAssertions = ["'test'", '{', '}'];
+    const positiveAssertions = ["{ test: 'test' }"];
     const negativeAssertions = ["''", ']'];
     setTestHelperArguments({ value: { test: 'test' } });
     testRunner(positiveAssertions, negativeAssertions, done);
 });
 
-test('log function logs an array', (done) => {
+test('log function logs an array - check ansi', (done) => {
     const positiveAssertions = ["'test'", '[', ']', '32m'];
+    const negativeAssertions = ["''", '{', '}'];
+    setTestHelperArguments({ value: ['test'] });
+    testRunner(positiveAssertions, negativeAssertions, done, false);
+});
+
+test('log function logs an array', (done) => {
+    const positiveAssertions = ["[ 'test' ]"];
     const negativeAssertions = ["''", '{', '}'];
     setTestHelperArguments({ value: ['test'] });
     testRunner(positiveAssertions, negativeAssertions, done);
 });
 
-const testRunner = (postiveAssertions, negativeAssertions, done) => {
+const testRunner = (postiveAssertions, negativeAssertions, done, stripAnsi = true) => {
     // https://nikhilvijayan.com/testing-stdout-in-node-js-jest
 
     const testAppFilePath = path.join(__dirname, './testHelper.js');
@@ -86,6 +93,8 @@ const testRunner = (postiveAssertions, negativeAssertions, done) => {
             calls = JSON.parse(fs.readFileSync(path.join(__dirname, './testHelperCalls.json'), 'utf8'));
         } catch (e) {}
         if (calls.called > iAmCallNumber) return finish();
+
+        if (stripAnsi) calls.stdoutData = calls.stdoutData.replace(/\u001b\[[0-9]{1,2}m/g, '');
 
         for (const assertion of postiveAssertions) expect(calls.stdoutData).toMatch(assertion);
         for (const assertion of negativeAssertions) expect(calls.stdoutData).not.toMatch(assertion);
