@@ -79,7 +79,7 @@ function eatCloseBrace() {
 }
 
 function eatKey() {
-    if (inspected[position] === "'") {
+    if (inspected[position] === "'" || inspected[position] === '"') {
         eatQuotedKey();
     } else {
         eatUnquotedKey();
@@ -87,10 +87,10 @@ function eatKey() {
 }
 
 function eatQuotedKey() {
-    if (inspected[position] !== "'") throw new Error('Expected key');
+    const quote = inspected[position];
     quoted += '"';
     position++;
-    while (inspected[position] !== "'") {
+    while (inspected[position] !== quote) {
         quoted += inspected[position];
         position++;
     }
@@ -117,7 +117,7 @@ function eatValue() {
     if (debug) console.log('eatValue', position, inspected[position]);
     if (inspected[position] === '{') {
         eatObject();
-    } else if (inspected[position] === "'") {
+    } else if (inspected[position] === "'" || inspected[position] === '"') {
         eatString();
     } else if (inspected[position] === '[') {
         eatArray();
@@ -128,10 +128,10 @@ function eatValue() {
 
 function eatString() {
     if (debug) console.log('eatString', position, inspected[position]);
-    if (inspected[position] !== "'") throw new Error('Expected string');
+    let quote = inspected[position];
     quoted += '"';
     position++;
-    while (inspected[position] !== "'") {
+    while (inspected[position] !== quote) {
         quoted += inspected[position];
         position++;
     }
@@ -165,6 +165,7 @@ function eatPrimitive() {
     if (debug) console.log('eatPrimitive', position, inspected[position]);
     while (inspected[position] !== ',' && inspected[position] !== '}' && inspected[position] !== ']') {
         quoted += inspected[position];
+        console.log('eatPrimitive', position, inspected[position]);
         position++;
     }
 }

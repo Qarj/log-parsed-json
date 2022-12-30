@@ -23,6 +23,13 @@ test('should return array of strings and json strings', () => {
     assertIsJson(result[1]);
 });
 
+test('should cope with a brace in a string', () => {
+    const result = parseJson.toArrayOfPlainStringsOrJson('real json {"value":["closing brace }"]}');
+    expect(result[0]).toBe('real json ');
+    expect(result[1]).toBe('{"value":["closing brace }"]}');
+    assertIsJson(result[1]);
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {
