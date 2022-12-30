@@ -48,14 +48,14 @@ test('log function logs a boolean', (done) => {
 test('log function logs an object', (done) => {
     const positiveAssertions = ["'test'", '{', '}'];
     const negativeAssertions = ["''", ']'];
-    setTestHelperArguments({ logObject: 2 });
+    setTestHelperArguments({ value: { test: 'test' } });
     testRunner(positiveAssertions, negativeAssertions, done);
 });
 
-test('log function logs an array alternate', (done) => {
+test('log function logs an array', (done) => {
     const positiveAssertions = ["'test'", '[', ']', '32m'];
     const negativeAssertions = ["''", '{', '}'];
-    setTestHelperArguments({ logObject: 1 });
+    setTestHelperArguments({ value: ['test'] });
     testRunner(positiveAssertions, negativeAssertions, done);
 });
 
