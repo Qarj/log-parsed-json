@@ -1,6 +1,6 @@
 {
     "name": "log-parsed-json",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Pretty prints strings to console if it contains valid JSON",
     "main": "index.js",
     "scripts": {
@@ -30,7 +30,7 @@
     },
     "homepage": "https://github.com/Qarj/log-parsed-json#readme",
     "jest": {
-        "testTimeout": 100
+        "testTimeout": 1000
     },
     "devDependencies": {
         "jest": "^29.3.1"
