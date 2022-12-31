@@ -7,7 +7,7 @@
 -   [x] cope with double quotes in keys that were originally inside single quoted keys
 -   [x] unquote single quotes
 -   [ ] cope with trailing comma in object
--   [ ] cope with backticks as outputed by inspect
+-   [x] cope with backticks as outputed by inspect
 -   [ ] cope with circular references
 
 ## Backlog

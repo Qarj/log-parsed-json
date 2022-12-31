@@ -76,6 +76,18 @@ test('when changing a single quoted string to double quotes, needs to unquote th
     expect(result).toBe(`{ "abc '": "test'", "key": 123 }`);
 });
 
+test('when changing a backtick quoted string to double quotes, needs to fix quotes', () => {
+    const scenario = "{ `abc '\"`: `test'\"`, 'key': 123}";
+    const result = parseJson.toString(scenario);
+    expect(result).toBe(`{ \"abc '\\\"\": \"test'\\\"\", \"key\": 123}`);
+});
+
+test('when changing a backticked quoted string to double quotes, needs to unquote the single quotes but not double', () => {
+    const scenario = fs.readFileSync('./backticked.txt', 'utf8'); // defeat prettier
+    const result = parseJson.toString(scenario);
+    expect(result).toBe('{ "abc \'\\"`": "test`\'\\"", "key": 123 }');
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {

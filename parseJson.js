@@ -120,7 +120,7 @@ function eatCloseBrace() {
 }
 
 function eatKey() {
-    if (inspected[position] === "'" || inspected[position] === '"') {
+    if (inspected[position] === "'" || inspected[position] === '"' || inspected[position] === '`') {
         eatQuotedKey();
     } else {
         eatUnquotedKey();
@@ -170,7 +170,7 @@ function eatValue() {
     if (debug) console.log('eatValue', position, inspected[position]);
     if (inspected[position] === '{') {
         eatObject();
-    } else if (inspected[position] === "'" || inspected[position] === '"') {
+    } else if (inspected[position] === "'" || inspected[position] === '"' || inspected[position] === '`') {
         eatString();
     } else if (inspected[position] === '[') {
         eatArray();
@@ -197,12 +197,12 @@ function eatCharOrEscapedChar(quote) {
     if (position >= inspected.length) throw new Error('Unexpected end of quoted key or string');
     if (inspected[position] === '\\') {
         if (debug) console.log('eatCharOrEscapedChar escape', position, inspected[position]);
-        if (quote === "'" && inspected[position + 1] === "'") {
+        if ((quote === "'" || quote === '`') && inspected[position + 1] === quote) {
             if (debug) console.log('eatCharOrEscapedChar unescape single quote', position, inspected[position]);
         } else quoted += inspected[position];
         position++;
     }
-    if (quote === "'" && inspected[position] === '"') quoted += '\\';
+    if ((quote === "'" || quote === '`') && inspected[position] === '"') quoted += '\\';
     quoted += inspected[position];
     position++;
 }
