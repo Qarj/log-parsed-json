@@ -122,6 +122,7 @@ function eatKey() {
 }
 
 function eatQuotedKey() {
+    if (debug) console.log('eatQuotedKey', position, inspected[position]);
     const quote = inspected[position];
     quoted += '"';
     position++;
@@ -134,12 +135,21 @@ function eatQuotedKey() {
 }
 
 function eatUnquotedKey() {
+    if (debug) console.log('eatUnquotedKey', position, inspected[position]);
+    setCheckpoint();
+    throwIfJsonSpecialCharacter(inspected[position]);
     quoted += '"';
     while (inspected[position] !== ':') {
         quoted += inspected[position];
         position++;
     }
     quoted += '"';
+}
+
+function throwIfJsonSpecialCharacter(char) {
+    if (char === '{' || char === '}' || char === '[' || char === ']' || char === ':' || char === ',') {
+        throw new Error(`Unexpected character ${char} at position ${position}`);
+    }
 }
 
 function eatColon() {

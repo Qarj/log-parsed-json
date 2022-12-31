@@ -49,8 +49,8 @@ console.log('real json {"value":["double quote \\"test\\""]}');
 log('real json {"value":["double quote \\"test\\""]}');
 gap();
 
-console.log('real json {"value":["closing brace }"]}');
-log('real json {"value":["closing brace }"]}');
+console.log('real json {"value":["closing brace }"]} not json {}');
+log('real json {"value":["closing brace }"]} not json {}');
 gap();
 
 console.log('broken json {"value":["test"] real json {"value":["test"]}');
@@ -66,7 +66,7 @@ log('concat strings {"value":["test" + "test"]}');
 gap();
 
 obj = {
-    value: 'abcdef this is a very long string without line breaks and goes on for some length to see what happens',
+    value: "some {} text { test: 'test', test2: 2, test3: true, test4: ['test', 1, true, [2]], test5: { test: 'test' } } test",
 };
 console.log(obj);
 log(obj);

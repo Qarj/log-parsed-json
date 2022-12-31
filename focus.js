@@ -1,7 +1,6 @@
 const log = require('./index.js');
 
-// let obj = 'text { "test": [ 1, 2, 3] } abc { "test": "good" } some text';
-let obj = 'text { "test": [ 1, 2, 3] } abc ';
+let obj = 'text {} abc ';
 
 console.log(obj);
 gap();

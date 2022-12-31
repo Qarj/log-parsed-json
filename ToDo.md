@@ -21,5 +21,6 @@
 -   [ ] log compliant json with colours
 -   [ ] indentation
 -   [ ] eat whitespace on \s
+-   [ ] key of ""
 
 ## Done

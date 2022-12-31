@@ -44,6 +44,13 @@ test('should parse an array of numbers', () => {
     assertIsJson(result[1]);
 });
 
+test('should cope with {}', () => {
+    const result = parseJson.toArrayOfPlainStringsOrJson('not json {} abc');
+    expect(result[0]).toBe('not json ');
+    expect(result[1]).toBe('{');
+    expect(result[2]).toBe('} abc');
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {
