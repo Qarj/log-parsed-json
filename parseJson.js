@@ -94,7 +94,8 @@ function eatKeyValuePairs() {
 }
 
 function eatWhitespace() {
-    while (inspected[position] === ' ' || inspected[position] === '\n') {
+    const whitespaceRegex = /\s/;
+    while (whitespaceRegex.test(inspected[position])) {
         quoted += inspected[position];
         position++;
     }

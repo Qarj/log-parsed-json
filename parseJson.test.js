@@ -57,6 +57,10 @@ test('should throw on {"}', () => {
     }).toThrow('Unexpected end of quoted key or string');
 });
 
+test('should cope with all kinds of whitespace', () => {
+    const jsonWithQuotedWhiteSpace = ' {  \t "test"\t: \t 123 \r \n }';
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {

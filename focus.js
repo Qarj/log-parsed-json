@@ -1,6 +1,6 @@
 const log = require('./index.js');
 
-let obj = 'text {"} abc ';
+let obj = '{  \r \t "test": \t "test", \r \r  "test2": 2 }';
 
 console.log(obj);
 gap();
@@ -9,7 +9,3 @@ log(obj);
 function gap() {
     console.log();
 }
-
-const myrex = /([0-9a-zA-Z-.])/;
-const characterToTest = '2';
-console.log(myrex.test(characterToTest));
