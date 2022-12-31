@@ -2,6 +2,10 @@
 
 ## Priority
 
+-   [ ] log objects within objects
+
+## Backlog
+
 -   [x] eat whitespace on \s
 -   [x] cope with double quotes in strings that were originally inside single quoted strings
 -   [x] cope with double quotes in keys that were originally inside single quoted keys
@@ -9,9 +13,6 @@
 -   [x] cope with trailing comma in object
 -   [x] cope with backticks as outputed by inspect
 -   [x] cope with circular references
-
-## Backlog
-
 -   [x] tests need to fail reliably
 -   [x] strip ansi codes from output for some assertions
 -   [x] change simple objects to be values

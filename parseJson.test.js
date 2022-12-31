@@ -62,36 +62,42 @@ test('should cope with all kinds of whitespace', () => {
     const jsonWithQuotedWhiteSpace = ' {  \t "test"\t: \t 123 \r \n }';
     const result = parseJson.toString(jsonWithQuotedWhiteSpace);
     expect(result).toBe(jsonWithQuotedWhiteSpace);
+    assertIsJson(result);
 });
 
 test('when changing a single quoted string to double quotes, needs to quote the double quotes', () => {
     const scenario = `{ '"abc ': 'test' }`;
     const result = parseJson.toString(scenario);
     expect(result).toBe(`{ "\\\"abc ": "test" }`);
+    assertIsJson(result);
 });
 
 test('when changing a single quoted string to double quotes, needs to unquote the single quotes', () => {
     const scenario = fs.readFileSync('./singlequoted.txt', 'utf8'); // defeat prettier
     const result = parseJson.toString(scenario);
     expect(result).toBe(`{ "abc '": "test'", "key": 123 }`);
+    assertIsJson(result);
 });
 
 test('when changing a backtick quoted string to double quotes, needs to fix quotes', () => {
     const scenario = "{ `abc '\"`: `test'\"`, 'key': 123}";
     const result = parseJson.toString(scenario);
     expect(result).toBe(`{ \"abc '\\\"\": \"test'\\\"\", \"key\": 123}`);
+    assertIsJson(result);
 });
 
 test('when changing a backticked quoted string to double quotes, needs to unquote the single quotes but not double', () => {
     const scenario = fs.readFileSync('./backticked.txt', 'utf8'); // defeat prettier
     const result = parseJson.toString(scenario);
     expect(result).toBe('{ "abc \'\\"`": "test`\'\\"", "key": 123 }');
+    assertIsJson(result);
 });
 
 test('cope with trailing comma in key value pairs for object', () => {
     const scenario = '{ "abc": 123, }';
     const result = parseJson.toString(scenario);
     expect(result).toBe('{ "abc": 123 }');
+    assertIsJson(result);
 });
 
 test('cope with circular references', () => {
