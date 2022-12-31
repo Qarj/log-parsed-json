@@ -4,6 +4,7 @@ let quoted;
 let debug = false;
 let checkpoint;
 let checkpointQuoted;
+let quotedLastCommaPosition;
 
 function getCheckpoint() {
     return checkpoint;
@@ -85,17 +86,33 @@ function eatObject() {
 
 function eatKeyValuePairs() {
     let morePairs = true;
+    let pairsEaten = 0;
     while (morePairs) {
         if (debug) console.log('eatKeyValuePairs', position, inspected[position]);
         eatWhitespace();
+        if (pairsEaten > 0 && inspected[position] === '}') {
+            if (quotedLastCommaPosition)
+                quoted = quoted.slice(0, quotedLastCommaPosition) + quoted.slice(quotedLastCommaPosition + 1);
+            quotedLastCommaPosition = undefined;
+            break;
+        }
         eatKey();
         eatWhitespace();
         eatColon();
         eatWhitespace();
         eatValue();
         eatWhitespace();
-        morePairs = eatCommaOptional();
+        morePairs = eatCommaPostValueInObjectOptional();
+        pairsEaten++;
     }
+}
+
+function eatCommaPostValueInObjectOptional() {
+    if (inspected[position] === ',') {
+        eatComma();
+        return true;
+    }
+    return false;
 }
 
 function eatWhitespace() {
@@ -216,10 +233,30 @@ function eatArray() {
     while (moreValues) {
         eatWhitespace();
         eatValue();
-        moreValues = eatCommaOptional();
+        // moreValues = eatCommaOptional();
+        moreValues = eatCommaOrCloseBracket();
         eatWhitespace();
     }
-    eatCloseBracket();
+    // eatCloseBracket();
+}
+
+function eatCommaOrCloseBracket() {
+    if (inspected[position] === ',') {
+        return eatComma();
+    } else if (inspected[position] === ']') {
+        return eatCloseBracket();
+    } else {
+        throw new Error('Expected comma or close bracket');
+    }
+}
+
+function eatComma() {
+    if (debug) console.log('eatComma', position, inspected[position]);
+    if (inspected[position] !== ',') throw new Error('Expected comma');
+    quoted += inspected[position];
+    quotedLastCommaPosition = quoted.length - 1;
+    position++;
+    return true;
 }
 
 function eatCloseBracket() {
@@ -227,6 +264,7 @@ function eatCloseBracket() {
     if (inspected[position] !== ']') throw new Error('Expected close bracket');
     quoted += inspected[position];
     position++;
+    return false;
 }
 
 function eatPrimitive() {
@@ -239,19 +277,11 @@ function eatPrimitive() {
     }
 }
 
-function eatCommaOptional() {
-    if (inspected[position] === ',') {
-        eatComma();
-        return true;
-    }
-    return false;
-}
-
-function eatComma() {
-    if (debug) console.log('eatComma', position, inspected[position]);
-    if (inspected[position] !== ',') throw new Error('Expected comma');
-    quoted += inspected[position];
-    position++;
-}
+// function eatComma() {
+//     if (debug) console.log('eatComma', position, inspected[position]);
+//     if (inspected[position] !== ',') throw new Error('Expected comma');
+//     quoted += inspected[position];
+//     position++;
+// }
 
 module.exports = { getCheckpoint, setPosition, toString, toArrayOfPlainStringsOrJson };

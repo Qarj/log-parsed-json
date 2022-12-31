@@ -1,6 +1,6 @@
 {
     "name": "log-parsed-json",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "description": "Pretty prints strings to console if it contains valid JSON",
     "main": "index.js",
     "scripts": {

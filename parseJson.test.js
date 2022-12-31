@@ -88,6 +88,12 @@ test('when changing a backticked quoted string to double quotes, needs to unquot
     expect(result).toBe('{ "abc \'\\"`": "test`\'\\"", "key": 123 }');
 });
 
+test('cope with trailing comma in key value pairs for object', () => {
+    const scenario = '{ "abc": 123, }';
+    const result = parseJson.toString(scenario);
+    expect(result).toBe('{ "abc": 123 }');
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {
