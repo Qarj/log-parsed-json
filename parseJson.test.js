@@ -137,6 +137,12 @@ test('{} is valid json', () => {
     assertIsJson(result);
 });
 
+test('should play nice with empty objects', () => {
+    const scenario = '{ "t": [], "a": {} }';
+    const result = parseJson.toString(scenario);
+    assertIsJson(result);
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {

@@ -108,6 +108,7 @@ function eatObject() {
 function eatKeyValuePairs() {
     let morePairs = true;
     let pairsEaten = 0;
+    quotedLastCommaPosition = undefined;
     while (morePairs) {
         if (debug) console.log('eatKeyValuePairs', position, inspected[position]);
         eatWhitespace();
