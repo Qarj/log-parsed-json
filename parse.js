@@ -1,5 +1,7 @@
 const parse = require('./parseJson.js');
+const fs = require('fs');
+const scenario = fs.readFileSync('./singlequoted.txt', 'utf8');
 
-let obj = '{\t"test"\t: \t 123  \n }';
-console.log(obj);
-console.log(parse.toString(obj));
+// const scenario = `{ 'abc \'': 'test\'' }`;
+console.log(scenario);
+console.log(parse.toString(scenario));

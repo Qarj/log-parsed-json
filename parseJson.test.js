@@ -1,4 +1,5 @@
 const parseJson = require('./parseJson.js');
+const fs = require('fs');
 
 beforeEach(() => {});
 
@@ -67,6 +68,12 @@ test('when changing a single quoted string to double quotes, needs to quote the 
     const scenario = `{ '"abc ': 'test' }`;
     const result = parseJson.toString(scenario);
     expect(result).toBe(`{ "\\\"abc ": "test" }`);
+});
+
+test('when changing a single quoted string to double quotes, needs to unquote the single quotes', () => {
+    const scenario = fs.readFileSync('./singlequoted.txt', 'utf8'); // defeat prettier
+    const result = parseJson.toString(scenario);
+    expect(result).toBe(`{ "abc '": "test'", "key": 123 }`);
 });
 
 function assertIsJson(json) {

@@ -137,6 +137,7 @@ function eatQuotedKey() {
     while (inspected[position] !== quote) {
         eatCharOrEscapedChar(quote);
     }
+    if (debug) console.log('eatQuotedKey end', position, inspected[position]);
     quoted += '"';
     position++;
 }
@@ -196,7 +197,9 @@ function eatCharOrEscapedChar(quote) {
     if (position >= inspected.length) throw new Error('Unexpected end of quoted key or string');
     if (inspected[position] === '\\') {
         if (debug) console.log('eatCharOrEscapedChar escape', position, inspected[position]);
-        quoted += inspected[position];
+        if (quote === "'" && inspected[position + 1] === "'") {
+            if (debug) console.log('eatCharOrEscapedChar unescape single quote', position, inspected[position]);
+        } else quoted += inspected[position];
         position++;
     }
     if (quote === "'" && inspected[position] === '"') quoted += '\\';

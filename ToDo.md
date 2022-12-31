@@ -3,8 +3,9 @@
 ## Priority
 
 -   [x] eat whitespace on \s
--   [ ] cope with double quotes in strings that were originally inside single quoted strings
--   [ ] cope with double quotes in keys that were originally inside single quoted keys
+-   [x] cope with double quotes in strings that were originally inside single quoted strings
+-   [x] cope with double quotes in keys that were originally inside single quoted keys
+-   [x] unquote single quotes
 -   [ ] cope with trailing comma in object
 -   [ ] cope with backticks as outputed by inspect
 -   [ ] cope with circular references
