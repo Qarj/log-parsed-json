@@ -59,6 +59,14 @@ test('should throw on {"}', () => {
 
 test('should cope with all kinds of whitespace', () => {
     const jsonWithQuotedWhiteSpace = ' {  \t "test"\t: \t 123 \r \n }';
+    const result = parseJson.toString(jsonWithQuotedWhiteSpace);
+    expect(result).toBe(jsonWithQuotedWhiteSpace);
+});
+
+test('when changing a single quoted string to double quotes, needs to quote the double quotes', () => {
+    const scenario = `{ '"abc ': 'test' }`;
+    const result = parseJson.toString(scenario);
+    expect(result).toBe(`{ "\\\"abc ": "test" }`);
 });
 
 function assertIsJson(json) {

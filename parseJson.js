@@ -20,6 +20,7 @@ function setPosition(newPosition) {
 }
 
 function toString(string) {
+    debugInfo(string);
     inspected = string;
     position = 0;
     checkpoint = 0;
@@ -29,13 +30,16 @@ function toString(string) {
     return quoted;
 }
 
-function toArrayOfPlainStringsOrJson(string) {
+function debugInfo(string) {
     if (debug && string.length < 100) {
         console.log(string);
         for (let i = 0; i < string.length; i += 10) process.stdout.write(' '.repeat(10) + '|');
         console.log();
     }
+}
 
+function toArrayOfPlainStringsOrJson(string) {
+    debugInfo(string);
     const result = [];
     inspected = string;
     position = 0;
@@ -85,6 +89,7 @@ function eatKeyValuePairs() {
         if (debug) console.log('eatKeyValuePairs', position, inspected[position]);
         eatWhitespace();
         eatKey();
+        eatWhitespace();
         eatColon();
         eatWhitespace();
         eatValue();
@@ -130,7 +135,7 @@ function eatQuotedKey() {
     quoted += '"';
     position++;
     while (inspected[position] !== quote) {
-        eatCharOrEscapedChar();
+        eatCharOrEscapedChar(quote);
     }
     quoted += '"';
     position++;
@@ -180,18 +185,21 @@ function eatString() {
     quoted += '"';
     position++;
     while (inspected[position] !== quote) {
-        eatCharOrEscapedChar();
+        eatCharOrEscapedChar(quote);
     }
     quoted += '"';
     position++;
 }
 
-function eatCharOrEscapedChar() {
+function eatCharOrEscapedChar(quote) {
+    if (debug) console.log('eatCharOrEscapedChar', position, inspected[position]);
     if (position >= inspected.length) throw new Error('Unexpected end of quoted key or string');
     if (inspected[position] === '\\') {
+        if (debug) console.log('eatCharOrEscapedChar escape', position, inspected[position]);
         quoted += inspected[position];
         position++;
     }
+    if (quote === "'" && inspected[position] === '"') quoted += '\\';
     quoted += inspected[position];
     position++;
 }

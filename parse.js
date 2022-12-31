@@ -1,5 +1,5 @@
 const parse = require('./parseJson.js');
 
-const obj = '{"}';
+let obj = '{\t"test"\t: \t 123  \n }';
 console.log(obj);
 console.log(parse.toString(obj));

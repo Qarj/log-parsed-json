@@ -1,10 +1,10 @@
 const log = require('./index.js');
 
-let obj = '{  \r \t "test": \t "test", \r \r  "test2": 2 }';
+const scenario = `{ '"abc ': 'test' }`;
 
-console.log(obj);
+console.log(scenario);
 gap();
-log(obj);
+log(scenario);
 
 function gap() {
     console.log();
