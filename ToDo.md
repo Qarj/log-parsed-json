@@ -2,10 +2,9 @@
 
 ## Priority
 
--   [ ] log objects within objects
-
 ## Backlog
 
+-   [x] log objects within objects
 -   [x] eat whitespace on \s
 -   [x] cope with double quotes in strings that were originally inside single quoted strings
 -   [x] cope with double quotes in keys that were originally inside single quoted keys

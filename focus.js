@@ -22,8 +22,12 @@ let scenario = {
 };
 
 scenario = `{
-    mykey: '{ "first": 123, "second": false, "3": null }',
+    mykey: '{ "first": 123, "second": false, "four": null }',
     other: 12345
+}    hey there!!
+{
+    yourkey: '{ "second": 234, "fifth": "{ five: 123 }", "88": false }',
+    other: 55
 }
 `;
 

@@ -6,6 +6,15 @@ let checkpoint;
 let checkpointQuoted;
 let quotedLastCommaPosition;
 
+function canParseJson(text) {
+    try {
+        toString(text);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
 function getCheckpoint() {
     return checkpoint;
 }
@@ -363,4 +372,4 @@ function eatPrimitive() {
 //     position++;
 // }
 
-module.exports = { getCheckpoint, setPosition, toString, toArrayOfPlainStringsOrJson };
+module.exports = { getCheckpoint, setPosition, toString, toArrayOfPlainStringsOrJson, canParseJson };

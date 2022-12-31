@@ -100,6 +100,18 @@ test('should log broken json prmitive followed by correct json', (done) => {
     testRunner(positiveAssertions, negativeAssertions, done, false);
 });
 
+test('should log json in json with colours', (done) => {
+    setTestHelperArguments({
+        value: `{
+    mykey: '{ "first": 323, "second": false, "3": null }',
+    other: 12345
+}`,
+    });
+    const positiveAssertions = ['mykey', '32m', '33m1', '33m3'];
+    const negativeAssertions = [];
+    testRunner(positiveAssertions, negativeAssertions, done, false);
+});
+
 const testRunner = (postiveAssertions, negativeAssertions, done, stripAnsi = true) => {
     // https://nikhilvijayan.com/testing-stdout-in-node-js-jest
 

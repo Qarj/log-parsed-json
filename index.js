@@ -1,3 +1,4 @@
+const { parse } = require('path');
 const util = require('util');
 const parseJson = require('./parseJson.js');
 
@@ -9,11 +10,38 @@ function main(object) {
         return console.log();
     }
 
-    const text = object;
+    logJsons(object);
+}
 
+function logJsons(text) {
     let array = parseJson.toArrayOfPlainStringsOrJson(text);
-    for (const item of array) logPretty(item);
+    for (const item of array) {
+        logPretty(item);
+        if (isJson(item)) logJsonsInJson(item);
+    }
     console.log();
+}
+
+function logJsonsInJson(item) {
+    object = JSON.parse(item);
+    for (const key in object) {
+        if (object[key] && typeof object[key] === 'object') logJsonsInJson(object[key]);
+        else if (parseJson.canParseJson(object[key])) {
+            console.log(`\nFOUND JSON found in key ${key} --->`);
+            logJsons(object[key]);
+        }
+    }
+}
+
+function isJson(text) {
+    try {
+        const result = JSON.parse(text);
+        if (!result) return false;
+        if (typeof result !== 'object') return false;
+        return true;
+    } catch (e) {
+        return false;
+    }
 }
 
 function logPretty(obj) {
