@@ -8,7 +8,7 @@
 -   [x] unquote single quotes
 -   [x] cope with trailing comma in object
 -   [x] cope with backticks as outputed by inspect
--   [ ] cope with circular references
+-   [x] cope with circular references
 
 ## Backlog
 

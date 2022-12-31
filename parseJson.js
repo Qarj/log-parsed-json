@@ -100,11 +100,65 @@ function eatKeyValuePairs() {
         eatWhitespace();
         eatColon();
         eatWhitespace();
+        eatReferenceOptional();
+        eatWhitespace();
         eatValue();
         eatWhitespace();
         morePairs = eatCommaPostValueInObjectOptional();
         pairsEaten++;
     }
+}
+
+function eatReferenceOptional() {
+    if (inspected[position] === '<') {
+        eatReference();
+    }
+}
+
+function eatReference() {
+    if (debug) console.log('eatReference', position, inspected[position]);
+    setCheckpoint();
+    eatOpenAngleBracket();
+    eatWhitespace();
+    eatRef();
+    eatWhitespace();
+    eatAsterisk();
+    eatWhitespace();
+    eatNumber();
+    eatWhitespace();
+    eatCloseAngleBracket();
+}
+
+function eatOpenAngleBracket() {
+    if (inspected[position] !== '<') throw new Error('Expected open angle bracket');
+    position++;
+}
+
+function eatRef() {
+    if (inspected[position] !== 'r') throw new Error('Expected r');
+    position++;
+    if (inspected[position] !== 'e') throw new Error('Expected e');
+    position++;
+    if (inspected[position] !== 'f') throw new Error('Expected f');
+    position++;
+}
+
+function eatAsterisk() {
+    if (inspected[position] !== '*') throw new Error('Expected asterisk');
+    position++;
+}
+
+function eatNumber() {
+    if (debug) console.log('eatNumber', position, inspected[position]);
+    const numberRegex = /[0-9]/;
+    while (numberRegex.test(inspected[position])) {
+        position++;
+    }
+}
+
+function eatCloseAngleBracket() {
+    if (inspected[position] !== '>') throw new Error('Expected close angle bracket');
+    position++;
 }
 
 function eatCommaPostValueInObjectOptional() {
@@ -232,12 +286,37 @@ function eatArray() {
     let moreValues = true;
     while (moreValues) {
         eatWhitespace();
+        eatCircularOptional();
         eatValue();
         // moreValues = eatCommaOptional();
         moreValues = eatCommaOrCloseBracket();
         eatWhitespace();
     }
     // eatCloseBracket();
+}
+
+function eatCircularOptional() {
+    if (
+        inspected[position] === 'C' &&
+        inspected[position + 1] === 'i' &&
+        inspected[position + 2] === 'r' &&
+        inspected[position + 3] === 'c' &&
+        inspected[position + 4] === 'u' &&
+        inspected[position + 5] === 'l' &&
+        inspected[position + 6] === 'a' &&
+        inspected[position + 7] === 'r'
+    ) {
+        eatCircular();
+    }
+}
+
+function eatCircular() {
+    if (debug) console.log('eatCircular', position, inspected[position]);
+    const testRegex = /[Circular *\d]/;
+    while (testRegex.test(inspected[position])) {
+        position++;
+    }
+    quoted += '"Circular"';
 }
 
 function eatCommaOrCloseBracket() {
