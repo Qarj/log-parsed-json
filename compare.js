@@ -49,8 +49,8 @@ console.log('real json {"value":["double quote \\"test\\""]}');
 log('real json {"value":["double quote \\"test\\""]}');
 gap();
 
-console.log('real json {"value":["closing brace }"]} not json {}');
-log('real json {"value":["closing brace }"]} not json {}');
+console.log('real json {"value":["closing brace }"]} is json {}');
+log('real json {"value":["closing brace }"]} is json {}');
 gap();
 
 console.log('broken json {"value":["test"] real json {"value":["test"]}');

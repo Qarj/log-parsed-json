@@ -32,7 +32,6 @@ function setPosition(newPosition) {
 function toString(string) {
     debugInfo(string);
     string = deStringify(string);
-    // console.log('toString', string);
     inspected = string;
     position = 0;
     checkpoint = 0;
@@ -112,7 +111,7 @@ function eatKeyValuePairs() {
     while (morePairs) {
         if (debug) console.log('eatKeyValuePairs', position, inspected[position]);
         eatWhitespace();
-        if (pairsEaten > 0 && inspected[position] === '}') {
+        if (inspected[position] === '}') {
             if (quotedLastCommaPosition)
                 quoted = quoted.slice(0, quotedLastCommaPosition) + quoted.slice(quotedLastCommaPosition + 1);
             quotedLastCommaPosition = undefined;

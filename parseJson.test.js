@@ -46,10 +46,10 @@ test('should parse an array of numbers', () => {
 });
 
 test('should cope with {}', () => {
-    const result = parseJson.toArrayOfPlainStringsOrJson('not json {} abc');
-    expect(result[0]).toBe('not json ');
-    expect(result[1]).toBe('{');
-    expect(result[2]).toBe('} abc');
+    const result = parseJson.toArrayOfPlainStringsOrJson('is json {} abc');
+    expect(result[0]).toBe('is json ');
+    expect(result[1]).toBe('{}');
+    expect(result[2]).toBe(' abc');
 });
 
 test('should throw on {"}', () => {
@@ -127,6 +127,12 @@ test('cope with circular references', () => {
 
 test('can cope with stringified strings', () => {
     const scenario = `{\n  \"abc\": 123,\n  \"object\": {\n    \"abc\": 123,\n    \"def\": \"test\",\n    \"mystringy\": \"{\\n  \\\"2\\\": true,\\n  \\\"abc\\\": 123,\\n  \\\"def\\\": \\\"test\\\",\\n  \\\"ghi\\\": {\\n    \\\"jkl\\\": \\\"test\\\",\\n    \\\"null\\\": null,\\n    \\\"\\\": true,\\n    \\\"result\\\": \\\"{\\\\\\\"abc\\\\\\\":123,\\\\\\\"def\\\\\\\":\\\\\\\"test\\\\\\\",\\\\\\\"ghi\\\\\\\":{\\\\\\\"jkl\\\\\\\":\\\\\\\"test\\\\\\\"}}\\\"\\n  }\\n}\"\n  }\n}`;
+    const result = parseJson.toString(scenario);
+    assertIsJson(result);
+});
+
+test('{} is valid json', () => {
+    const scenario = '{}';
     const result = parseJson.toString(scenario);
     assertIsJson(result);
 });
