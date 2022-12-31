@@ -1,6 +1,6 @@
 const log = require('./index.js');
 
-let obj = 'text {} abc ';
+let obj = 'text {"} abc ';
 
 console.log(obj);
 gap();

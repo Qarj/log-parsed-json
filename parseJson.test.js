@@ -51,6 +51,12 @@ test('should cope with {}', () => {
     expect(result[2]).toBe('} abc');
 });
 
+test('should throw on {"}', () => {
+    expect(() => {
+        parseJson.toString('{"}');
+    }).toThrow('Unexpected end of quoted key or string');
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {

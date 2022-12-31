@@ -123,12 +123,13 @@ function eatKey() {
 
 function eatQuotedKey() {
     if (debug) console.log('eatQuotedKey', position, inspected[position]);
+    setCheckpoint();
+    throwIfJsonSpecialCharacter(inspected[position]);
     const quote = inspected[position];
     quoted += '"';
     position++;
     while (inspected[position] !== quote) {
-        quoted += inspected[position];
-        position++;
+        eatCharOrEscapedChar();
     }
     quoted += '"';
     position++;
@@ -185,6 +186,7 @@ function eatString() {
 }
 
 function eatCharOrEscapedChar() {
+    if (position >= inspected.length) throw new Error('Unexpected end of quoted key or string');
     if (inspected[position] === '\\') {
         quoted += inspected[position];
         position++;
