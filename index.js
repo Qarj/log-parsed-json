@@ -23,9 +23,10 @@ function logJsons(text) {
 }
 
 function logJsonsInJson(item) {
-    object = JSON.parse(item);
+    const object = JSON.parse(item);
+
     for (const key in object) {
-        if (object[key] && typeof object[key] === 'object') logJsonsInJson(object[key]);
+        if (object[key] && typeof object[key] === 'object') logJsonsInJson(JSON.stringify(object[key]));
         else if (parseJson.canParseJson(object[key])) {
             console.log(`\nFOUND JSON found in key ${key} --->`);
             logJsons(object[key]);

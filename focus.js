@@ -1,35 +1,51 @@
 const log = require('./index.js');
 const fs = require('fs');
 
-const myObject = {
+let special = JSON.stringify({ abc: 123, def: 'test', ghi: { jkl: 'test' } });
+console.log(typeof special);
+special = JSON.parse(special);
+console.log(typeof special);
+
+console.log('another');
+let another = JSON.parse('  "abcd" ');
+console.log(typeof another);
+
+const someObject = {
     abc: 123,
     def: 'test',
+    2: true,
     ghi: {
-        jkl: 'test',
+        'jkl': 'test',
+        [null]: null,
+        [undefined]: undefined,
+        '': true,
+        'result': '{"abc":123,"def":"test","ghi":{"jkl":"test"}}',
     },
 };
 
-const someOtherObject = {
-    zzz: 123,
-    jj: 'test',
+const string = JSON.stringify(someObject, null, 2);
+
+const object = {
+    abc: 123,
+    def: 'test',
+    mystringy: string,
 };
 
-someOtherObject.abc = myObject;
-myObject.xyz = someOtherObject;
-let scenario = {
-    abc: myObject,
-    def: someOtherObject,
-};
+const nextLevel = JSON.stringify(
+    {
+        abc: 123,
+        object: object,
+    },
+    null,
+    2,
+);
 
-scenario = `{
-    mykey: '{ "first": 123, "second": false, "four": null }',
-    other: 12345
-}    hey there!!
-{
-    yourkey: '{ "second": 234, "fifth": "{ five: 123 }", "88": false }',
-    other: 55
-}
-`;
+let scenario = JSON.stringify(nextLevel, null, 2);
+
+// scenario = JSON.parse(scenario);
+console.log(typeof scenario);
+
+fs.writeFileSync('./stringifiedString.txt', scenario, 'utf8');
 
 console.log(scenario);
 gap();

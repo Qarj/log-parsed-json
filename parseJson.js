@@ -31,6 +31,8 @@ function setPosition(newPosition) {
 
 function toString(string) {
     debugInfo(string);
+    string = deStringify(string);
+    // console.log('toString', string);
     inspected = string;
     position = 0;
     checkpoint = 0;
@@ -38,6 +40,16 @@ function toString(string) {
     quoted = '';
     eatObject();
     return quoted;
+}
+
+function deStringify(string) {
+    try {
+        const result = JSON.parse(string);
+        if (typeof result === 'string') return result;
+        return string;
+    } catch (e) {
+        return string;
+    }
 }
 
 function debugInfo(string) {
@@ -50,6 +62,7 @@ function debugInfo(string) {
 
 function toArrayOfPlainStringsOrJson(string) {
     debugInfo(string);
+    string = deStringify(string);
     const result = [];
     inspected = string;
     position = 0;
@@ -364,12 +377,5 @@ function eatPrimitive() {
         position++;
     }
 }
-
-// function eatComma() {
-//     if (debug) console.log('eatComma', position, inspected[position]);
-//     if (inspected[position] !== ',') throw new Error('Expected comma');
-//     quoted += inspected[position];
-//     position++;
-// }
 
 module.exports = { getCheckpoint, setPosition, toString, toArrayOfPlainStringsOrJson, canParseJson };
