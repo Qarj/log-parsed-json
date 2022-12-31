@@ -30,6 +30,12 @@ function toString(string) {
 }
 
 function toArrayOfPlainStringsOrJson(string) {
+    if (debug && string.length < 100) {
+        console.log(string);
+        for (let i = 0; i < string.length; i += 10) process.stdout.write(' '.repeat(10) + '|');
+        console.log();
+    }
+
     const result = [];
     inspected = string;
     position = 0;
@@ -202,8 +208,8 @@ function eatCloseBracket() {
 function eatPrimitive() {
     setCheckpoint();
     if (debug) console.log('eatPrimitive', position, inspected[position]);
-    const primitiveRegex = /^[0-9a-zA-Z-]/;
-    while (inspected[position] === primitiveRegex.test(inspected[position])) {
+    const primitiveRegex = /([0-9a-zA-Z-.])/;
+    while (primitiveRegex.test(inspected[position])) {
         quoted += inspected[position];
         position++;
     }

@@ -37,6 +37,13 @@ test('should cope with a double quote in string', () => {
     assertIsJson(result[1]);
 });
 
+test('should parse an array of numbers', () => {
+    const result = parseJson.toArrayOfPlainStringsOrJson('real json { "test": [ 1, 2, 3] }');
+    expect(result[0]).toBe('real json ');
+    expect(result[1]).toBe('{ "test": [ 1, 2, 3] }');
+    assertIsJson(result[1]);
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {

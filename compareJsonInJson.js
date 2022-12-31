@@ -30,16 +30,16 @@ obj = {
 obj['hasJson'] = JSON.stringify(obj);
 obj['hasMoreJson'] = JSON.stringify(obj);
 obj['hasEvenMoreJson'] = JSON.stringify(obj);
-console.log('Log object with console.log()');
+console.log('console.log(object)');
 console.log(obj);
 gap();
-console.log('Log object with log()');
+console.log('log(object)');
 log(obj);
 gap();
-console.log('Log object with JSON.stringify()');
+console.log('console.log(JSON.stringify(object))');
 console.log(JSON.stringify(obj));
 gap();
-console.log('Log object with log(JSON.stringify())');
+console.log('log(JSON.stringify(object))');
 log(JSON.stringify(obj));
 
 function gap() {
