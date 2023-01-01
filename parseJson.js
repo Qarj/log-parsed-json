@@ -44,7 +44,7 @@ function toString(string) {
 function deStringify(string) {
     try {
         const result = JSON.parse(string);
-        if (typeof result === 'string') return result;
+        if (typeof result === 'string') return deStringify(result);
         return string;
     } catch (e) {
         return string;

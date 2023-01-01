@@ -1,4 +1,3 @@
-const { parse } = require('path');
 const util = require('util');
 const parseJson = require('./parseJson.js');
 

@@ -143,6 +143,24 @@ test('should play nice with empty objects', () => {
     assertIsJson(result);
 });
 
+test('should cope with overly stringified objects', () => {
+    const object = {
+        'arr"ay': [
+            1,
+            {
+                'obj"ec\'}t': { '\n\nk"\'ey': "\"\"''',value" },
+            },
+            [],
+            {},
+            true,
+            null,
+        ],
+    };
+    const scenario = JSON.stringify(JSON.stringify(JSON.stringify(JSON.stringify(object))));
+    const result = parseJson.toString(scenario);
+    assertIsJson(result);
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {
