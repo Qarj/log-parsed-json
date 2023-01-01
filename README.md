@@ -10,7 +10,7 @@ Recursively dumps JSON objects found inside other JSON objects, even if they are
 
 As well as regular stringified JSON, it copes with much of the output from util.inspect(), including circular references.
 
-Intended to help with debugging.
+Intended to help with debugging, particulary in situations where you have for example Kibana logs containing JSON within JSON.
 
 ## Installation
 
@@ -18,7 +18,7 @@ Intended to help with debugging.
 npm install log-parsed-json
 ```
 
-## Usage
+## Usage - pretty printing JSONs found within a string
 
 ```javascript
 const { log } = require('log-parsed-json');
