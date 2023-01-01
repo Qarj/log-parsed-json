@@ -58,4 +58,5 @@ module.exports = {
     log,
     toString: parseJson.toString,
     toArrayOfPlainStringsOrJson: parseJson.toArrayOfPlainStringsOrJson,
+    canParseJson: parseJson.canParseJson,
 };

@@ -77,3 +77,56 @@ Result
   ' text'
 ]
 ```
+
+## Usage - canParseJson
+
+Returns true or false based on if `toString()` would return a valid JSON string.
+
+```javascript
+const { canParseJson } = require('log-parsed-json');
+
+console.log(canParseJson(`{ 'k1': 'v1', k2: 123 }`));
+console.log(canParseJson(`{ 'k1': "v1", "k2": 123 }`));
+console.log(canParseJson(`"test"`));
+console.log(canParseJson(123));
+console.log(canParseJson(true));
+```
+
+Result
+
+```json
+true
+true
+false
+false
+false
+```
+
+Let's write a function and compare the response from `JSON.parse()` for the same scenarios.
+
+```javascript
+function isJSON(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
+console.log(isJSON(`{ 'k1': 'v1', k2: 123 }`));
+console.log(isJSON(`{ 'k1': "v1", "k2": 123 }`));
+console.log(isJSON(`"test"`));
+console.log(isJSON(123));
+console.log(isJSON(true));
+```
+
+Result
+
+```json
+false
+false
+true
+true
+true
+```

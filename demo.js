@@ -16,3 +16,28 @@ console.log(toString("{ a: 'somestring', b: 42, e: { c: 82, d: [Circular *1] } }
 const { toArrayOfPlainStringsOrJson } = require('./index.js');
 
 console.log(toArrayOfPlainStringsOrJson(`text { 'k1': 'v1', 'k2': 123 } text { a: 1 } text`));
+
+const { canParseJson } = require('./index.js');
+
+console.log(canParseJson(`{ 'k1': 'v1', k2: 123 }`));
+console.log(canParseJson(`{ 'k1': "v1", "k2": 123 }`));
+console.log(canParseJson(`"test"`));
+console.log(canParseJson(123));
+console.log(canParseJson(true));
+
+console.log();
+
+function isJSON(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
+console.log(isJSON(`{ 'k1': 'v1', k2: 123 }`));
+console.log(isJSON(`{ 'k1': "v1", "k2": 123 }`));
+console.log(isJSON(`"test"`));
+console.log(isJSON(123));
+console.log(isJSON(true));
