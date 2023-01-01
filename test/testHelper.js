@@ -1,4 +1,4 @@
-const log = require('../index.js');
+const { log } = require('../index.js');
 const fs = require('fs');
 const path = require('path');
 

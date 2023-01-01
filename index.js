@@ -1,7 +1,7 @@
 const util = require('util');
 const parseJson = require('./parseJson.js');
 
-function main(object) {
+function log(object) {
     if (typeof object === 'number') return console.log(object);
     if (typeof object === 'boolean') return console.log(object);
     if (typeof object === 'object') {
@@ -54,4 +54,4 @@ function logPretty(obj) {
     }
 }
 
-module.exports = main;
+module.exports = { log };

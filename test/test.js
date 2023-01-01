@@ -1,4 +1,4 @@
-const log = require('../index.js');
+const { log } = require('../index.js');
 const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');

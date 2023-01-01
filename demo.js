@@ -1,4 +1,4 @@
-const log = require('./index.js');
+const { log } = require('./index.js');
 
 log('Hello World!');
 log(123);

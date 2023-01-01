@@ -1,5 +1,4 @@
 const parse = require('./parseJson.js');
-const fs = require('fs');
 scenario = `{
   abc: <ref *1> {
     abc: 123,

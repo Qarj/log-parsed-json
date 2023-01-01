@@ -1,5 +1,4 @@
-const log = require('./index.js');
-const fs = require('fs');
+const { log } = require('./index.js');
 
 const scenario = '{ "t": [], "a": {} }';
 
