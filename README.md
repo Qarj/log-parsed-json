@@ -130,3 +130,69 @@ true
 true
 true
 ```
+
+## Usage - pretty print JSONs piped to `pretty`
+
+In the system path, create a perl script called `pretty` with the following content
+
+```perl
+#!/usr/bin/env perl
+
+my $lines = '';
+
+# read in the lines from pipe
+while (<>)
+{
+    $lines .= $_;
+}
+
+my $script_folder = $0;
+$script_folder =~ s/[^\/]*$//;
+
+my $output_file = $script_folder . "pretty.txt";
+my $node_pretty = $script_folder . "pretty.js";
+
+open (FILE, ">$output_file");
+print FILE $lines;
+close (FILE);
+
+# run the pretty printer
+system("node $node_pretty $output_file");
+```
+
+Make the script executable
+
+```bash
+chmod +x pretty
+```
+
+Install `log-parsed-json` globally
+
+```bash
+npm install -g log-parsed-json
+```
+
+Create a file called `pretty.js` with the following content
+
+```javascript
+const fs = require('fs');
+const { log } = require('log-parsed-json');
+
+let args = process.argv.slice(2);
+let prettyFile = args[0];
+let text = fs.readFileSync(prettyFile, 'utf8');
+
+log(text);
+```
+
+To your profile, add the following line at the end
+
+```bash
+export NODE_PATH=$(npm root --location=global)
+```
+
+Open a fresh shell, now you can pipe to `pretty`
+
+```bash
+echo abc { a: 2 } abc | pretty
+```
