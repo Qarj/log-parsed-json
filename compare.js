@@ -65,6 +65,9 @@ console.log('concat strings {"value":["test" + "test"]}');
 log('concat strings {"value":["test" + "test"]}');
 gap();
 
+console.log(`some text { key1: true, 'key2': "  { inner: 'value', } " } text { a: 1 } text`);
+log(`some text { key1: true, 'key2': "  { inner: 'value', } " } text { a: 1 } text`);
+
 obj = {
     value: "some {} text { test: 'test', test2: 2, test3: true, test4: ['test', 1, true, [2]], test5: { test: 'test' } } test",
 };
