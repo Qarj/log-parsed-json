@@ -12,3 +12,7 @@ const { toString } = require('./index.js');
 
 console.log(toString(`{ 'k1': 'v1', 'k2': 123 }`));
 console.log(toString("{ a: 'somestring', b: 42, e: { c: 82, d: [Circular *1] } }"));
+
+const { toArrayOfPlainStringsOrJson } = require('./index.js');
+
+console.log(toArrayOfPlainStringsOrJson(`text { 'k1': 'v1', 'k2': 123 } text { a: 1 } text`));

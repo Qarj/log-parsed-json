@@ -15,18 +15,10 @@ function canParseJson(text) {
     }
 }
 
-function getCheckpoint() {
-    return checkpoint;
-}
-
 function setCheckpoint() {
     if (debug) console.log('setCheckpoint', position, inspected[position]);
     checkpoint = position;
     checkpointQuoted = quoted;
-}
-
-function setPosition(newPosition) {
-    position = newPosition;
 }
 
 function toString(string) {

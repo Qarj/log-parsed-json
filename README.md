@@ -57,3 +57,23 @@ Result
 ```txt
 { "a": "somestring", "b": 42, "e": { "c": 82, "d": ["Circular"] } }
 ```
+
+## Usage - parsing a string to an array of plain strings or JSON.parse() compatible strings
+
+```javascript
+const { toArrayOfPlainStringsOrJson } = require('log-parsed-json');
+
+console.log(toArrayOfPlainStringsOrJson(`text { 'k1': 'v1', 'k2': 123 } text { a: 1 } text`));
+```
+
+Result
+
+```txt
+[
+  'text ',
+  '{ "k1": "v1", "k2": 123 }',
+  ' text ',
+  '{ "a": 1 }',
+  ' text'
+]
+```
