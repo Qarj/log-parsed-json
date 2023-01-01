@@ -378,4 +378,4 @@ function eatPrimitive() {
     }
 }
 
-module.exports = { getCheckpoint, setPosition, toString, toArrayOfPlainStringsOrJson, canParseJson };
+module.exports = { toString, toArrayOfPlainStringsOrJson, canParseJson };

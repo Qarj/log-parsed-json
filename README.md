@@ -29,3 +29,31 @@ log(`some text { key1: true, 'key2': "  { inner: 'value', } " } text { a: 1 } te
 Result
 
 ![Result](./jsonInJson.png)
+
+## Usage - parsing a JSON like string into JSON.parse() friendly format
+
+util.inspect()'s output is not JSON.parse() friendly.
+
+```javascript
+const { toString } = require('log-parsed-json');
+
+console.log(toString(`{ 'k1': 'v1', 'k2': 123 }`));
+```
+
+Result
+
+```txt
+{ "k1": "v1", "k2": 123 }
+```
+
+Mentions of circular are just turned into a string, and any refs within the object are removed.
+
+```javascript
+console.log(toString("{ a: 'somestring', b: 42, e: { c: 82, d: [Circular *1] } }"));
+```
+
+Result
+
+```txt
+{ "a": "somestring", "b": 42, "e": { "c": 82, "d": ["Circular"] } }
+```

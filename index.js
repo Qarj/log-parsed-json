@@ -54,4 +54,4 @@ function logPretty(obj) {
     }
 }
 
-module.exports = { log };
+module.exports = { log, toString: parseJson.toString };
