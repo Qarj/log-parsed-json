@@ -364,10 +364,10 @@ function eatPrimitive() {
     setCheckpoint();
     if (debug) console.log('eatPrimitive', position, inspected[position]);
     if (
-        inspected[position] === 'N' &&
-        inspected[position + 1] === 'o' &&
-        inspected[position + 2] === 'n' &&
-        inspected[position + 3] === 'e'
+        inspected[position].toLowerCase() === 'n' &&
+        inspected[position + 1].toLowerCase() === 'o' &&
+        inspected[position + 2].toLowerCase() === 'n' &&
+        inspected[position + 3].toLowerCase() === 'e'
     )
         return eatNone();
 

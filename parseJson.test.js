@@ -168,6 +168,16 @@ test('should change None primitive to null', () => {
     assertIsJson(result);
 });
 
+test('should change noNe primitive to null', () => {
+    const object =
+        "{'intent': {'slots': {'location': noNe}, 'confirmationState': 'None', 'name': 'JobSearch', 'state': 'InProgress'}, 'nluConfidence': 0.8}";
+    const result = parseJson.toString(object);
+    expect(result).toBe(
+        '{"intent": {"slots": {"location": null}, "confirmationState": "None", "name": "JobSearch", "state": "InProgress"}, "nluConfidence": 0.8}',
+    );
+    assertIsJson(result);
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {

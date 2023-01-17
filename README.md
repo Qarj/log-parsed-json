@@ -8,7 +8,9 @@ Pretty prints JSON like objects found in the string passed to it.
 
 Recursively dumps JSON objects found inside other JSON objects, even if they are overly stringified.
 
-As well as regular stringified JSON, it copes with much of the output from util.inspect(), including circular references.
+As well as regular stringified JSON, it copes with much of the output from util.inspect() for standard JSON-like data objects, including circular references.
+
+Python None is changed to null.
 
 Intended to help with debugging, particulary in situations where you have for example Kibana logs containing JSON within JSON.
 
