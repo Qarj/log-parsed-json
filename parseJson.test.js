@@ -161,6 +161,13 @@ test('should cope with overly stringified objects', () => {
     assertIsJson(result);
 });
 
+test('should change None primitive to null', () => {
+    const object = '{ "abc": None }';
+    const result = parseJson.toString(object);
+    expect(result).toBe('{ "abc": null }');
+    assertIsJson(result);
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {

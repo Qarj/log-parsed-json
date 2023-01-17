@@ -363,11 +363,25 @@ function eatCloseBracket() {
 function eatPrimitive() {
     setCheckpoint();
     if (debug) console.log('eatPrimitive', position, inspected[position]);
+    if (
+        inspected[position] === 'N' &&
+        inspected[position + 1] === 'o' &&
+        inspected[position + 2] === 'n' &&
+        inspected[position + 3] === 'e'
+    )
+        return eatNone();
+
     const primitiveRegex = /([0-9a-zA-Z-.])/;
     while (primitiveRegex.test(inspected[position])) {
         quoted += inspected[position];
         position++;
     }
+}
+
+function eatNone() {
+    if (debug) console.log('eatNone', position, inspected[position]);
+    quoted += 'null';
+    position += 4;
 }
 
 module.exports = { toString, toArrayOfPlainStringsOrJson, canParseJson };
