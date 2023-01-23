@@ -203,6 +203,29 @@ test('bug - should support newline after object before array end', () => {
     assertIsJson(result);
 });
 
+test('should support trailing comma in array - 1', () => {
+    let object = `{
+    savedJobs: [
+        {
+            external: false
+        },
+    ]
+}`;
+    const result = parseJson.toString(object);
+    assertIsJson(result);
+});
+
+test('should support trailing comma in array - 2', () => {
+    let object = '{ arr: [1,2,3,]}';
+    const result = parseJson.toString(object);
+    assertIsJson(result);
+});
+test('should support trailing comma in array - 3', () => {
+    let object = '{ arr: [,]}';
+    const result = parseJson.toString(object);
+    assertIsJson(result);
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {

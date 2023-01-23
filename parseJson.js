@@ -318,14 +318,23 @@ function eatArray() {
     quoted += inspected[position];
     position++;
     let moreValues = true;
+    quotedLastCommaPosition = undefined;
     while (moreValues) {
         eatWhitespace();
+        if (inspected[position] === ']') {
+            if (quotedLastCommaPosition)
+                quoted = quoted.slice(0, quotedLastCommaPosition) + quoted.slice(quotedLastCommaPosition + 1);
+            quotedLastCommaPosition = undefined;
+            break;
+        }
         eatCircularOptional();
         eatValue();
         eatWhitespace();
-        moreValues = eatCommaOrCloseBracket();
+        moreValues = eatCommaPostValueInObjectOptional();
+        // moreValues = eatCommaOrCloseBracket();
         eatWhitespace();
     }
+    eatCloseBracket();
 }
 
 function eatCircularOptional() {
