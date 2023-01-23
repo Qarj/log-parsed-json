@@ -220,6 +220,7 @@ test('should support trailing comma in array - 2', () => {
     const result = parseJson.toString(object);
     assertIsJson(result);
 });
+
 test('should support trailing comma in array - 3', () => {
     let object = '{ arr: [,]}';
     const result = parseJson.toString(object);
