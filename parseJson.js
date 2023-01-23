@@ -273,12 +273,14 @@ function eatString() {
     while (inspected[position] !== quote) {
         eatCharOrEscapedChar(quote);
     }
+    if (debug) console.log('end eatString', position, inspected[position]);
     quoted += '"';
     position++;
 }
 
 function eatCharOrEscapedChar(quote) {
-    if (debug) console.log('eatCharOrEscapedChar', position, inspected[position]);
+    if (debug)
+        console.log('eatCharOrEscapedChar', position, inspected[position], ' ' + inspected[position].charCodeAt(0));
     if (position >= inspected.length) throw new Error('Unexpected end of quoted key or string');
     if (inspected[position] === '\\') {
         if (debug) console.log('eatCharOrEscapedChar escape', position, inspected[position]);
