@@ -191,6 +191,18 @@ test('should support [null] key name', () => {
     assertIsJson(result);
 });
 
+test('bug - should support newline after object before array end', () => {
+    let object = `{
+    savedJobs: [
+        {
+            external: false
+        }
+    ]
+}`;
+    const result = parseJson.toString(object);
+    assertIsJson(result);
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {

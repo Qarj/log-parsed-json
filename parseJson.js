@@ -322,11 +322,10 @@ function eatArray() {
         eatWhitespace();
         eatCircularOptional();
         eatValue();
-        // moreValues = eatCommaOptional();
+        eatWhitespace();
         moreValues = eatCommaOrCloseBracket();
         eatWhitespace();
     }
-    // eatCloseBracket();
 }
 
 function eatCircularOptional() {

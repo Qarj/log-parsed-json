@@ -14,16 +14,13 @@ let scenario = `{
             location: 'UB6',
             salary: 'From £25,000 to £35,000 per annum Depending on experience',
             datePosted: '2022-12-30T12:50:56.743Z',
-            dateExpire: '2023-01-02T14:24:18.027Z',
-            relatedjobs: [1, 2, 232, 1, true, false, 'first', { none: { [null]: 'test' } }],
-            companyLogo: '',
+         dateExpire: '2023-01-02T14:24:18.027Z',
             companyLogoAlt: 'Eskan Electronics Ltd',
-            specialString: 'single quote {{ } [[ ]]]"\n" \'',
             applyUrl: '/job/11135371/apply',
             url: 'https://www.example.com/job/electronics-test-engineer/eskan-electronics-ltd-job111',
             isActive: true,
             external: false,
-        },
+        }, 
     ],
 }`;
 
