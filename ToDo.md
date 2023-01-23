@@ -2,6 +2,8 @@
 
 ## Priority
 
+-   since toString doesn't have an opening quote, we need to parse characters until we hit a space
+
 ## Backlog
 
 -   [ ] change undefined to null?

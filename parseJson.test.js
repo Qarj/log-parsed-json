@@ -178,6 +178,13 @@ test('should change noNe primitive to null', () => {
     assertIsJson(result);
 });
 
+test('should treat space in key name as terminator if no in quotes', () => {
+    const object = ` { toString } `;
+    expect(() => {
+        parseJson.toString(object);
+    }).toThrow('Expected colon');
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {

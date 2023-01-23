@@ -112,6 +112,17 @@ test('should log json in json with colours', (done) => {
     testRunner(positiveAssertions, negativeAssertions, done, false);
 });
 
+test('should handle destructure before json', (done) => {
+    setTestHelperArguments({
+        value: `const { toString } = require('log-parsed-json');
+
+    console.log(toString("{ 'k1': 'v1', 'k2': 123 }"));`,
+    });
+    const positiveAssertions = ['k1', '39m', '32m', '33m123'];
+    const negativeAssertions = [];
+    testRunner(positiveAssertions, negativeAssertions, done, false);
+});
+
 const testRunner = (postiveAssertions, negativeAssertions, done, stripAnsi = true) => {
     // https://nikhilvijayan.com/testing-stdout-in-node-js-jest
 

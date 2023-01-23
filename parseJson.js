@@ -232,7 +232,7 @@ function eatUnquotedKey() {
     setCheckpoint();
     throwIfJsonSpecialCharacter(inspected[position]);
     quoted += '"';
-    while (inspected[position] !== ':') {
+    while (inspected[position] !== ':' && inspected[position] !== ' ') {
         quoted += inspected[position];
         position++;
     }
