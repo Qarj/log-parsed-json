@@ -99,15 +99,12 @@ function eatObject() {
 
 function eatKeyValuePairs() {
     let morePairs = true;
-    let pairsEaten = 0;
     quotedLastCommaPosition = undefined;
     while (morePairs) {
         if (debug) console.log('eatKeyValuePairs', position, inspected[position]);
         eatWhitespace();
         if (inspected[position] === '}') {
-            if (quotedLastCommaPosition)
-                quoted = quoted.slice(0, quotedLastCommaPosition) + quoted.slice(quotedLastCommaPosition + 1);
-            quotedLastCommaPosition = undefined;
+            removeTrailingCommaIfPresent();
             break;
         }
         eatKey();
@@ -118,8 +115,7 @@ function eatKeyValuePairs() {
         eatWhitespace();
         eatValue();
         eatWhitespace();
-        morePairs = eatCommaPostValueInObjectOptional();
-        pairsEaten++;
+        morePairs = eatCommaPostValueOptional();
     }
 }
 
@@ -175,7 +171,7 @@ function eatCloseAngleBracket() {
     position++;
 }
 
-function eatCommaPostValueInObjectOptional() {
+function eatCommaPostValueOptional() {
     if (inspected[position] === ',') {
         eatComma();
         return true;
@@ -322,19 +318,22 @@ function eatArray() {
     while (moreValues) {
         eatWhitespace();
         if (inspected[position] === ']') {
-            if (quotedLastCommaPosition)
-                quoted = quoted.slice(0, quotedLastCommaPosition) + quoted.slice(quotedLastCommaPosition + 1);
-            quotedLastCommaPosition = undefined;
+            removeTrailingCommaIfPresent();
             break;
         }
         eatCircularOptional();
         eatValue();
         eatWhitespace();
-        moreValues = eatCommaPostValueInObjectOptional();
-        // moreValues = eatCommaOrCloseBracket();
+        moreValues = eatCommaPostValueOptional();
         eatWhitespace();
     }
     eatCloseBracket();
+}
+
+function removeTrailingCommaIfPresent() {
+    if (quotedLastCommaPosition)
+        quoted = quoted.slice(0, quotedLastCommaPosition) + quoted.slice(quotedLastCommaPosition + 1);
+    quotedLastCommaPosition = undefined;
 }
 
 function eatCircularOptional() {
@@ -359,16 +358,6 @@ function eatCircular() {
         position++;
     }
     quoted += '"Circular"';
-}
-
-function eatCommaOrCloseBracket() {
-    if (inspected[position] === ',') {
-        return eatComma();
-    } else if (inspected[position] === ']') {
-        return eatCloseBracket();
-    } else {
-        throw new Error('Expected comma or close bracket');
-    }
 }
 
 function eatComma() {
