@@ -230,6 +230,7 @@ function eatQuotedKey() {
 function eatUnquotedKey() {
     if (debug) console.log('eatUnquotedKey', position, inspected[position]);
     setCheckpoint();
+    if (inspected[position] === '[') return eatNullKey();
     throwIfJsonSpecialCharacter(inspected[position]);
     quoted += '"';
     while (inspected[position] !== ':' && inspected[position] !== ' ') {
@@ -237,6 +238,23 @@ function eatUnquotedKey() {
         position++;
     }
     quoted += '"';
+}
+
+function eatNullKey() {
+    if (debug) console.log('eatNullKey', position, inspected[position]);
+    if (inspected[position] !== '[') throw new Error('Expected open bracket');
+    position++;
+    if (inspected[position].toLowerCase() !== 'n') throw new Error('Expected n');
+    position++;
+    if (inspected[position].toLowerCase() !== 'u') throw new Error('Expected u');
+    position++;
+    if (inspected[position].toLowerCase() !== 'l') throw new Error('Expected l');
+    position++;
+    if (inspected[position].toLowerCase() !== 'l') throw new Error('Expected l');
+    position++;
+    if (inspected[position] !== ']') throw new Error('Expected close bracket');
+    position++;
+    quoted += '"null"';
 }
 
 function throwIfJsonSpecialCharacter(char) {
@@ -279,9 +297,9 @@ function eatString() {
 }
 
 function eatCharOrEscapedChar(quote) {
+    if (position >= inspected.length) throw new Error('Unexpected end of quoted key or string');
     if (debug)
         console.log('eatCharOrEscapedChar', position, inspected[position], ' ' + inspected[position].charCodeAt(0));
-    if (position >= inspected.length) throw new Error('Unexpected end of quoted key or string');
     if (inspected[position] === '\\') {
         if (debug) console.log('eatCharOrEscapedChar escape', position, inspected[position]);
         if ((quote === "'" || quote === '`') && inspected[position + 1] === quote) {

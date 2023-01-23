@@ -185,6 +185,12 @@ test('should treat space in key name as terminator if no in quotes', () => {
     }).toThrow('Expected colon');
 });
 
+test('should support [null] key name', () => {
+    const object = ` { [null]: 'test' } `;
+    const result = parseJson.toString(object);
+    assertIsJson(result);
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {
