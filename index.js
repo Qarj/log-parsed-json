@@ -59,4 +59,8 @@ module.exports = {
     toString: parseJson.toString,
     toArrayOfPlainStringsOrJson: parseJson.toArrayOfPlainStringsOrJson,
     canParseJson: parseJson.canParseJson,
+    firstJson: parseJson.firstJson,
+    lastJson: parseJson.lastJson,
+    largestJson: parseJson.largestJson,
+    jsonMatching: parseJson.jsonMatching,
 };
