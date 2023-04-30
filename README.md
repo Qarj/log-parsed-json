@@ -133,6 +133,70 @@ true
 true
 ```
 
+## Usage - firstJson
+
+Returns the first JSON object found in the string.
+
+```javascript
+const { firstJson } = require('log-parsed-json');
+
+console.log(firstJson(`text { 'k1': 'v1', 'k2': 123 } text { a: 1 } text`));
+```
+
+Result
+
+```json
+{ "k1": "v1", "k2": 123 }
+```
+
+## Usage - lastJson
+
+Returns the last JSON object found in the string.
+
+```javascript
+const { lastJson } = require('log-parsed-json');
+
+console.log(lastJson(`text { 'k1': 'v1', 'k2': 123 } text { a: 1 } text`));
+```
+
+Result
+
+```json
+{ "a": 1 }
+```
+
+## Usage - largestJson
+
+Returns the largest JSON object found in the string.
+
+```javascript
+const { largestJson } = require('log-parsed-json');
+
+console.log(largestJson(`text { 'k1': 'v1', 'k2': 123 } text { a: 1 } text`));
+```
+
+Result
+
+```json
+{ "k1": "v1", "k2": 123 }
+```
+
+## Usage - jsonMatching
+
+Returns the first JSON object found in the string that matches the given regular expression.
+
+```javascript
+const { jsonMatching } = require('log-parsed-json');
+
+console.log(jsonMatching(`text { 'k1': 'v1', 'k2': 123 } text { a: 1 } text`, /a: 1/));
+```
+
+Result
+
+```json
+{ "a": 1 }
+```
+
 ## Usage - pretty print JSONs piped to `pretty`
 
 To enable this, install `log-parsed-json` globally

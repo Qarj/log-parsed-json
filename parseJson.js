@@ -81,6 +81,31 @@ function toArrayOfPlainStringsOrJson(string) {
     return result;
 }
 
+function firstJson(string) {
+    const result = toArrayOfPlainStringsOrJson(string);
+    for (item of result) if (canParseJson(item)) return item;
+    return '';
+}
+
+function lastJson(string) {
+    const result = toArrayOfPlainStringsOrJson(string);
+    for (let i = result.length - 1; i >= 0; i--) if (canParseJson(result[i])) return result[i];
+    return '';
+}
+
+function largestJson(string) {
+    const result = toArrayOfPlainStringsOrJson(string);
+    let largest = '';
+    for (item of result) if (canParseJson(item) && item.length > largest.length) largest = item;
+    return largest;
+}
+
+function jsonMatching(string, regex) {
+    const result = toArrayOfPlainStringsOrJson(string);
+    for (item of result) if (canParseJson(item) && regex.test(item)) return item;
+    return '';
+}
+
 function eatPlainText() {
     while (inspected[position] !== '{' && position < inspected.length) {
         quoted += inspected[position];
@@ -401,4 +426,12 @@ function eatNone() {
     position += 4;
 }
 
-module.exports = { toString, toArrayOfPlainStringsOrJson, canParseJson };
+module.exports = {
+    toString,
+    toArrayOfPlainStringsOrJson,
+    firstJson,
+    lastJson,
+    largestJson,
+    jsonMatching,
+    canParseJson,
+};

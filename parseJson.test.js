@@ -24,6 +24,39 @@ test('should return array of strings and json strings', () => {
     assertIsJson(result[1]);
 });
 
+test('should return first valid json object', () => {
+    const result = parseJson.firstJson(
+        "text before { test: 'test', array: ['test', { test: 'test' }] } text { hey: 1 } after",
+    );
+    expect(result).toBe('{ "test": "test", "array": ["test", { "test": "test" }] }');
+    assertIsJson(result);
+});
+
+test('should return last valid json object', () => {
+    const result = parseJson.lastJson(
+        "text before { test: 'test', array: ['test', { test: 'test' }] } text { hey: 1 } after",
+    );
+    expect(result).toBe('{ "hey": 1 }');
+    assertIsJson(result);
+});
+
+test('should return largest valid json object', () => {
+    const result = parseJson.largestJson(
+        "text { gday: 'hi' } before { test: 'test', array: ['test', { test: 'test' }] } text { hey: 1 } after",
+    );
+    expect(result).toBe('{ "test": "test", "array": ["test", { "test": "test" }] }');
+    assertIsJson(result);
+});
+
+test('should return json object matching regular expression', () => {
+    const result = parseJson.jsonMatching(
+        "text { gday: 'hi' } before { test: 'test', array: ['test', { test: 'test' }] } text { hey: 1 } after",
+        /hey/,
+    );
+    expect(result).toBe('{ "hey": 1 }');
+    assertIsJson(result);
+});
+
 test('should cope with a brace in a string', () => {
     const result = parseJson.toArrayOfPlainStringsOrJson('real json {"value":["closing brace }"]}');
     expect(result[0]).toBe('real json ');
