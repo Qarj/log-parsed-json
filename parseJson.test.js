@@ -260,6 +260,12 @@ test('should support trailing comma in array - 3', () => {
     assertIsJson(result);
 });
 
+test('should escape single quotes in strings if not followed by comma or close brace', () => {
+    let object = "{ 'abc': 'test's' }";
+    const result = parseJson.toString(object);
+    assertIsJson(result);
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {

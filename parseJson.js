@@ -309,12 +309,30 @@ function eatString() {
     let quote = inspected[position];
     quoted += '"';
     position++;
-    while (inspected[position] !== quote) {
+    while (!isEndQuoteMakingAllowanceForUnescapedSingleQuotes(quote)) {
         eatCharOrEscapedChar(quote);
     }
     if (debug) console.log('end eatString', position, inspected[position]);
     quoted += '"';
     position++;
+}
+
+function isEndQuoteMakingAllowanceForUnescapedSingleQuotes(quote) {
+    if (quote !== "'") return inspected[position] === quote;
+    try {
+        const virtualPosition = eatVirtualWhiteSpace(position + 1);
+        if (inspected[position] === quote && inspected[virtualPosition] === ',') return true;
+        if (inspected[position] === quote && inspected[virtualPosition] === '}') return true;
+    } catch {}
+    return false;
+}
+
+function eatVirtualWhiteSpace(virtualPosition) {
+    const whitespaceRegex = /\s/;
+    while (whitespaceRegex.test(inspected[virtualPosition])) {
+        virtualPosition++;
+    }
+    return virtualPosition;
 }
 
 function eatCharOrEscapedChar(quote) {
