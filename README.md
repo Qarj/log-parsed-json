@@ -12,6 +12,10 @@ As well as regular stringified JSON, it copes with much of the output from util.
 
 Python None is changed to null.
 
+Trailing commas are removed.
+
+Unescaped single quotes in single quoted strings are handled, so long as they are not followed by a comma or close curly brace (ignoring whitespace).
+
 Intended to help with debugging, particulary in situations where you have for example Kibana logs containing JSON within JSON.
 
 ## Installation
