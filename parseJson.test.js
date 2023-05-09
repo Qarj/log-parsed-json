@@ -260,10 +260,25 @@ test('should support trailing comma in array - 3', () => {
     assertIsJson(result);
 });
 
-test('should escape single quotes in strings if not followed by comma or close brace', () => {
+test('should escape single quotes in strings if not followed by comma or close brace - case 1', () => {
     let object = "{ 'abc': 'test's' }";
     const result = parseJson.toString(object);
     assertIsJson(result);
+    expect(result).toBe('{ "abc": "test\'s" }');
+});
+
+test('should escape single quotes in strings if not followed by comma or close brace - case 2', () => {
+    let object = "{ 'abc': 'test'' }";
+    const result = parseJson.toString(object);
+    assertIsJson(result);
+    expect(result).toBe('{ "abc": "test\'" }');
+});
+
+test('should escape single quotes in strings if not followed by comma or close brace - case 3', () => {
+    let object = "{ 'abc': 'test' ' }";
+    const result = parseJson.toString(object);
+    assertIsJson(result);
+    expect(result).toBe('{ "abc": "test\' " }');
 });
 
 function assertIsJson(json) {
