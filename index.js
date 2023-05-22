@@ -1,5 +1,5 @@
 const util = require('util');
-const parseJson = require('./parseJson.js');
+const ParseJson = require('./ParseJson.js');
 
 function log(object) {
     if (typeof object === 'number') return console.log(object);
@@ -13,7 +13,7 @@ function log(object) {
 }
 
 function logJsons(text) {
-    let array = parseJson.toArrayOfPlainStringsOrJson(text);
+    let array = toArrayOfPlainStringsOrJson(text);
     for (const item of array) {
         logPretty(item);
         if (isJson(item)) logJsonsInJson(item);
@@ -26,7 +26,7 @@ function logJsonsInJson(item) {
 
     for (const key in object) {
         if (object[key] && typeof object[key] === 'object') logJsonsInJson(JSON.stringify(object[key]));
-        else if (parseJson.canParseJson(object[key])) {
+        else if (canParseJson(object[key])) {
             console.log(`\nFOUND JSON found in key ${key} --->`);
             logJsons(object[key]);
         }
@@ -54,13 +54,62 @@ function logPretty(obj) {
     }
 }
 
+function toString(input) {
+    const parseJson = new ParseJson(input);
+    return parseJson.toString();
+}
+
+function toArrayOfPlainStringsOrJson(input) {
+    const parseJson = new ParseJson(input);
+    return parseJson.toArrayOfPlainStringsOrJson();
+}
+
+function canParseJson(input) {
+    const parseJson = new ParseJson(input);
+    try {
+        parseJson.toString();
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+function firstJson(input) {
+    const parseJson = new ParseJson(input);
+    const result = parseJson.toArrayOfPlainStringsOrJson();
+    for (item of result) if (canParseJson(item)) return item;
+    return '';
+}
+
+function lastJson(input) {
+    const parseJson = new ParseJson(input);
+    const result = parseJson.toArrayOfPlainStringsOrJson();
+    for (let i = result.length - 1; i >= 0; i--) if (canParseJson(result[i])) return result[i];
+    return '';
+}
+
+function largestJson(input) {
+    const parseJson = new ParseJson(input);
+    const result = parseJson.toArrayOfPlainStringsOrJson();
+    let largest = '';
+    for (item of result) if (canParseJson(item) && item.length > largest.length) largest = item;
+    return largest;
+}
+
+function jsonMatching(input, regex) {
+    const parseJson = new ParseJson(input);
+    const result = parseJson.toArrayOfPlainStringsOrJson();
+    for (item of result) if (canParseJson(item) && regex.test(item)) return item;
+    return '';
+}
+
 module.exports = {
     log,
-    toString: parseJson.toString,
-    toArrayOfPlainStringsOrJson: parseJson.toArrayOfPlainStringsOrJson,
-    canParseJson: parseJson.canParseJson,
-    firstJson: parseJson.firstJson,
-    lastJson: parseJson.lastJson,
-    largestJson: parseJson.largestJson,
-    jsonMatching: parseJson.jsonMatching,
+    toString,
+    toArrayOfPlainStringsOrJson,
+    canParseJson,
+    firstJson,
+    lastJson,
+    largestJson,
+    jsonMatching,
 };

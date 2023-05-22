@@ -1,4 +1,4 @@
-const parseJson = require('./parseJson.js');
+const parseJson = require('./index.js');
 const fs = require('fs');
 
 beforeEach(() => {});
@@ -279,6 +279,35 @@ test('should escape single quotes in strings if not followed by comma or close b
     const result = parseJson.toString(object);
     assertIsJson(result);
     expect(result).toBe('{ "abc": "test\' " }');
+});
+
+test('should run quickly and not have catatrophic garbage collection', () => {
+    const protoObject = {
+        array: ['test', 1234, true, null, undefined, { abc: 'test' }],
+        string: 'test',
+        number: 1234,
+        boolean: true,
+    };
+
+    const object = {};
+    for (let i = 0; i < 5; i++) {
+        object[i] = protoObject;
+    }
+
+    let string = JSON.stringify(object);
+    for (let i = 0; i < 4; i++) {
+        string += `Some text ${string} more text then ${string} end\n`;
+    }
+
+    const startTime = Date.now();
+    const result = parseJson.toArrayOfPlainStringsOrJson(string);
+    console.log('result length', result.length);
+    for (let i = 0; i < result.length; i++) {
+        parseJson.canParseJson(result[i]);
+    }
+
+    const endTime = Date.now();
+    expect(endTime - startTime).toBeLessThan(1000);
 });
 
 function assertIsJson(json) {

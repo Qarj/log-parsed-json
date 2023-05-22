@@ -1,4 +1,4 @@
-const parse = require('./parseJson.js');
+const parse = require('./index.js');
 scenario = `{
   abc: <ref *1> {
     abc: 123,
