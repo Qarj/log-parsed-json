@@ -209,6 +209,13 @@ class ParseJson {
         return false;
     }
 
+    eatQuoteAdditional(quote) {
+        const eatExtra = quote.length - 1;
+        for (let i = 0; i < eatExtra; i++) {
+            this.position++;
+        }
+    }
+
     eatQuotedKey() {
         if (this.debug) console.log('eatQuotedKey', this.position, this.inspected[this.position]);
         this.setCheckpoint();
@@ -216,12 +223,14 @@ class ParseJson {
         const quote = this.getQuote();
         this.quoted += '"';
         this.position++;
+        this.eatQuoteAdditional(quote);
         while (!this.checkQuote(quote)) {
             this.eatCharOrEscapedChar(quote);
         }
         if (this.debug) console.log('eatQuotedKey end', this.position, this.inspected[this.position]);
         this.quoted += '"';
         this.position++;
+        this.eatQuoteAdditional(quote);
     }
 
     eatUnquotedKey() {
@@ -285,12 +294,14 @@ class ParseJson {
         let quote = this.getQuote();
         this.quoted += '"';
         this.position++;
+        this.eatQuoteAdditional(quote);
         while (!this.isEndQuoteMakingAllowanceForUnescapedSingleQuotes(quote)) {
             this.eatCharOrEscapedChar(quote);
         }
         if (this.debug) console.log('end eatString', this.position, this.inspected[this.position]);
         this.quoted += '"';
         this.position++;
+        this.eatQuoteAdditional(quote);
     }
 
     isEndQuoteMakingAllowanceForUnescapedSingleQuotes(quote) {
