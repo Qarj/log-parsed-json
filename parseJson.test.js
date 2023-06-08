@@ -287,6 +287,12 @@ test('should cope with escaped double quotes used as quotes - aka Kibana', () =>
     assertIsJson(result);
 });
 
+test('should cope with escaped double quotes used as quotes - inside strings', () => {
+    let object = `{\\"@metadata\\":{\\"message\\":\\"{\\\\"url\\\\": \\\\"hey\\\\"\\"}}`;
+    const result = parseJson.toString(object);
+    assertIsJson(result);
+});
+
 test('should run quickly and not have catatrophic garbage collection', () => {
     const protoObject = {
         array: ['test', 1234, true, null, undefined, { abc: 'test' }],
@@ -307,13 +313,9 @@ test('should run quickly and not have catatrophic garbage collection', () => {
 
     const startTime = Date.now();
     const result = parseJson.toArrayOfPlainStringsOrJson(string);
-    console.log('result length', result.length);
     for (let i = 0; i < result.length; i++) {
         parseJson.canParseJson(result[i]);
     }
-
-    console.log('result length', result.length);
-    console.log(result);
 
     const endTime = Date.now();
     expect(endTime - startTime).toBeLessThan(5000);

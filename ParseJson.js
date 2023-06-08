@@ -322,6 +322,15 @@ class ParseJson {
         return virtualPosition;
     }
 
+    isDoubleEscapedDoubleQuote() {
+        if (this.position + 2 >= this.inspected.length) return false;
+        return (
+            this.inspected[this.position] === '\\' &&
+            this.inspected[this.position + 1] === '\\' &&
+            this.inspected[this.position + 2] === '"'
+        );
+    }
+
     eatCharOrEscapedChar(quote) {
         if (this.position >= this.inspected.length) throw new Error('Unexpected end of quoted key or string');
         if (this.debug)
@@ -333,6 +342,10 @@ class ParseJson {
             );
         if (!this.checkQuote(quote) && this.inspected[this.position] === '\\') {
             if (this.debug) console.log('eatCharOrEscapedChar escape', this.position, this.inspected[this.position]);
+            if (this.isDoubleEscapedDoubleQuote()) {
+                if (this.debug) console.log('eatCharOrEscapedChar unescape double quote', this.position);
+                this.position++;
+            }
             if ((quote === "'" || quote === '`') && this.inspected[this.position + 1] === quote) {
                 if (this.debug)
                     console.log(
