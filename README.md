@@ -16,6 +16,8 @@ Trailing commas are removed.
 
 Unescaped single quotes in single quoted strings are handled, so long as they are not followed by a comma or close curly brace (ignoring whitespace).
 
+Escaped quotes as used in Kibana logs are handled. E.g. `{\"@metadata\": \"value\"}`
+
 Intended to help with debugging, particulary in situations where you have for example Kibana logs containing JSON within JSON.
 
 ## Installation

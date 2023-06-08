@@ -190,25 +190,33 @@ class ParseJson {
     }
 
     eatKey() {
-        if (
-            this.inspected[this.position] === "'" ||
-            this.inspected[this.position] === '"' ||
-            this.inspected[this.position] === '`'
-        ) {
-            this.eatQuotedKey();
-        } else {
-            this.eatUnquotedKey();
-        }
+        if (this.getQuote()) this.eatQuotedKey();
+        else this.eatUnquotedKey();
+    }
+
+    getQuote() {
+        if (this.inspected[this.position] === "'") return "'";
+        if (this.inspected[this.position] === '"') return '"';
+        if (this.inspected[this.position] === '`') return '`';
+        if (this.inspected[this.position] === '\\' && this.inspected[this.position + 1] === '"') return '\\"';
+        return false;
+    }
+
+    checkQuote(quote) {
+        if (quote.length === 1) return this.inspected[this.position] === quote;
+        if (quote.length === 2)
+            return this.inspected[this.position] === quote[0] && this.inspected[this.position + 1] === quote[1];
+        return false;
     }
 
     eatQuotedKey() {
         if (this.debug) console.log('eatQuotedKey', this.position, this.inspected[this.position]);
         this.setCheckpoint();
         this.throwIfJsonSpecialCharacter(this.inspected[this.position]);
-        const quote = this.inspected[this.position];
+        const quote = this.getQuote();
         this.quoted += '"';
         this.position++;
-        while (this.inspected[this.position] !== quote) {
+        while (!this.checkQuote(quote)) {
             this.eatCharOrEscapedChar(quote);
         }
         if (this.debug) console.log('eatQuotedKey end', this.position, this.inspected[this.position]);
@@ -262,11 +270,7 @@ class ParseJson {
         if (this.debug) console.log('eatValue', this.position, this.inspected[this.position]);
         if (this.inspected[this.position] === '{') {
             this.eatObject();
-        } else if (
-            this.inspected[this.position] === "'" ||
-            this.inspected[this.position] === '"' ||
-            this.inspected[this.position] === '`'
-        ) {
+        } else if (this.getQuote()) {
             this.eatString();
         } else if (this.inspected[this.position] === '[') {
             this.eatArray();
@@ -278,7 +282,7 @@ class ParseJson {
     eatString() {
         this.setCheckpoint();
         if (this.debug) console.log('eatString', this.position, this.inspected[this.position]);
-        let quote = this.inspected[this.position];
+        let quote = this.getQuote();
         this.quoted += '"';
         this.position++;
         while (!this.isEndQuoteMakingAllowanceForUnescapedSingleQuotes(quote)) {
@@ -290,7 +294,7 @@ class ParseJson {
     }
 
     isEndQuoteMakingAllowanceForUnescapedSingleQuotes(quote) {
-        if (quote !== "'") return this.inspected[this.position] === quote;
+        if (quote !== "'") return this.checkQuote(quote);
         try {
             const virtualPosition = this.eatVirtualWhiteSpace(this.position + 1);
             if (this.inspected[this.position] === quote && this.inspected[virtualPosition] === ',') return true;
@@ -316,7 +320,7 @@ class ParseJson {
                 this.inspected[this.position],
                 ' ' + this.inspected[this.position].charCodeAt(0),
             );
-        if (this.inspected[this.position] === '\\') {
+        if (!this.checkQuote(quote) && this.inspected[this.position] === '\\') {
             if (this.debug) console.log('eatCharOrEscapedChar escape', this.position, this.inspected[this.position]);
             if ((quote === "'" || quote === '`') && this.inspected[this.position + 1] === quote) {
                 if (this.debug)
