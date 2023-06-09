@@ -293,6 +293,17 @@ test('should cope with escaped double quotes used as quotes - inside strings', (
     assertIsJson(result);
 });
 
+test('should cope with stack overflow json', () => {
+    let object = `{
+staus: "Success",
+id: 1,
+data: [{'Movie':'kung fu panda','% viewed': 50.5},{'Movie':'kung fu panda 2','% viewed':1.5}],
+metadata: {'filters':['Movie', 'Percentage Viewed' ] , 'params':{'content':'Comedy', 'type': 'Movie'}}
+}`;
+    const result = parseJson.toString(object);
+    assertIsJson(result);
+});
+
 test('should run quickly and not have catatrophic garbage collection', () => {
     const protoObject = {
         array: ['test', 1234, true, null, undefined, { abc: 'test' }],

@@ -292,6 +292,7 @@ class ParseJson {
         this.setCheckpoint();
         if (this.debug) console.log('eatString', this.position, this.inspected[this.position]);
         let quote = this.getQuote();
+        if (this.debug) console.log('quote', quote);
         this.quoted += '"';
         this.position++;
         this.eatQuoteAdditional(quote);
@@ -308,8 +309,9 @@ class ParseJson {
         if (quote !== "'") return this.checkQuote(quote);
         try {
             const virtualPosition = this.eatVirtualWhiteSpace(this.position + 1);
-            if (this.inspected[this.position] === quote && this.inspected[virtualPosition] === ',') return true;
-            if (this.inspected[this.position] === quote && this.inspected[virtualPosition] === '}') return true;
+            if (this.checkQuote(quote) && this.inspected[virtualPosition] === ',') return true;
+            if (this.checkQuote(quote) && this.inspected[virtualPosition] === '}') return true;
+            if (this.checkQuote(quote) && this.inspected[virtualPosition] === ']') return true;
         } catch {}
         return false;
     }
