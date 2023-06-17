@@ -23,7 +23,6 @@ Intended to help with debugging, particulary in situations where you have for ex
 -   Remove trailing commas
 -   Add quotes to keys
 -   Convert single quotes, backticks, curly quotes, escaped double quotes and double escaped double quotes to double quotes
--   Unescaped single quotes in single quoted strings are handled, so long as they are not followed by a comma or close curly brace (ignoring whitespace).
 
 ## Installation
 

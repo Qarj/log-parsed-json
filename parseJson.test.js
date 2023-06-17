@@ -300,27 +300,6 @@ test('should support trailing comma in array - 3', () => {
     assertIsJson(result);
 });
 
-test('should escape single quotes in strings if not followed by comma or close brace - case 1', () => {
-    let object = "{ 'abc': 'test's' }";
-    const result = parseJson.toString(object);
-    assertIsJson(result);
-    expect(result).toBe('{ "abc": "test\'s" }');
-});
-
-test('should escape single quotes in strings if not followed by comma or close brace - case 2', () => {
-    let object = "{ 'abc': 'test'' }";
-    const result = parseJson.toString(object);
-    assertIsJson(result);
-    expect(result).toBe('{ "abc": "test\'" }');
-});
-
-test('should escape single quotes in strings if not followed by comma or close brace - case 3', () => {
-    let object = "{ 'abc': 'test' ' }";
-    const result = parseJson.toString(object);
-    assertIsJson(result);
-    expect(result).toBe('{ "abc": "test\' " }');
-});
-
 test('should cope with escaped double quotes used as quotes - aka Kibana', () => {
     let object = `{\\"@metadata\\":{\\"beat\\":\\"filebeat\\"}}`;
     const result = parseJson.toString(object);
@@ -411,6 +390,22 @@ test('should error the right way given broken json', () => {
     expect(() => {
         parseJson.toString(object);
     }).toThrow('Unexpected quote in unquoted key');
+});
+
+test('should cope with a difficult scenario', () => {
+    let object = `{ 
+value: true peter: 'fun' number: 3 somekey: "a string"
+array: [ 2 9234 98234 9 9213840  98213409 98234]
+}`;
+    const result = parseJson.toString(object);
+    assertIsJson(result);
+});
+
+test('should cope with unquoted single quote inside single quoted string if an s follows', () => {
+    let object = `{ 'test': 'test's' }`;
+    const result = parseJson.toString(object);
+    assertIsJson(result);
+    expect(result).toBe(`{ "test": "test's" }`);
 });
 
 test('should run quickly and not have catatrophic garbage collection', () => {

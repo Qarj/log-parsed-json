@@ -62,8 +62,6 @@ class ParseJson {
                 } catch (e) {
                     if (this.debug)
                         console.log('error root eat object', e, this.position, this.inspected[this.position]);
-                    // this.quoted = this.checkpointQuoted;
-                    // this.position = this.checkpoint;
                     this.quoted += '{';
                     this.position = recoveryPosition;
                 }
@@ -234,6 +232,7 @@ class ParseJson {
     eatQuoteAdditional(quote) {
         const eatExtra = quote.length - 1;
         for (let i = 0; i < eatExtra; i++) {
+            if (this.debug) console.log('eatQuoteAdditional', this.position, this.inspected[this.position]);
             this.position++;
         }
     }
@@ -317,11 +316,11 @@ class ParseJson {
         this.setCheckpoint();
         if (this.debug) console.log('eatString', this.position, this.inspected[this.position]);
         let quote = this.getQuote();
-        if (this.debug) console.log('quote', quote);
+        if (this.debug) console.log('eatString quote', quote);
         this.quoted += '"';
         this.position++;
         this.eatQuoteAdditional(quote);
-        while (!this.isEndQuoteMakingAllowanceForUnescapedSingleQuotes(quote)) {
+        while (!this.isEndQuoteMakingAllowanceForUnescapedSingleQuote(quote)) {
             this.eatCharOrEscapedChar(quote);
         }
         if (this.debug) console.log('end eatString', this.position, this.inspected[this.position]);
@@ -344,7 +343,7 @@ class ParseJson {
         if (this.debug) console.log('quote', quote);
         this.position++;
         this.eatQuoteAdditional(quote);
-        while (!this.isEndQuoteMakingAllowanceForUnescapedSingleQuotes(quote)) {
+        while (!this.isEndQuoteMakingAllowanceForUnescapedSingleQuote(quote)) {
             this.eatCharOrEscapedChar(quote);
         }
         if (this.debug) console.log('end eatString', this.position, this.inspected[this.position]);
@@ -355,18 +354,12 @@ class ParseJson {
         this.eatConcatenatedStrings();
     }
 
-    isEndQuoteMakingAllowanceForUnescapedSingleQuotes(quote) {
+    isEndQuoteMakingAllowanceForUnescapedSingleQuote(quote) {
         if (quote !== "'") return this.checkQuote(quote);
         try {
-            const virtualPosition = this.eatVirtualWhiteSpace(this.position + 1);
-            if (this.checkQuote(quote) && this.inspected[virtualPosition] === ',') return true;
-            if (this.checkQuote(quote) && this.inspected[virtualPosition] === '}') return true;
-            if (this.checkQuote(quote) && this.inspected[virtualPosition] === ']') return true;
-            if (this.checkQuote(quote) && this.inspected[virtualPosition] === '+') return true;
-        } catch {
-            if (this.debug) console.log('isEndQuoteMakingAllowanceForUnescapedSingleQuotes', this.position, false);
-        }
-        return false;
+            if (this.checkQuote(quote) && this.inspected[this.position + 1] === 's') return false;
+        } catch {}
+        return this.checkQuote(quote);
     }
 
     eatVirtualWhiteSpace(virtualPosition) {
