@@ -60,28 +60,28 @@ test('should return json object matching regular expression', () => {
 test('should cope with a brace in a string', () => {
     const result = parseJson.toArrayOfPlainStringsOrJson('real json {"value":["closing brace }"]}');
     expect(result[0]).toBe('real json ');
-    expect(result[1]).toBe('{"value":["closing brace }"]}');
+    expect(result[1]).toBe('{ "value": ["closing brace }"] }');
     assertIsJson(result[1]);
 });
 
 test('should cope with a double quote in string', () => {
     const result = parseJson.toArrayOfPlainStringsOrJson('real json {"value":["double quote \\"test\\""]}');
     expect(result[0]).toBe('real json ');
-    expect(result[1]).toBe('{"value":["double quote \\"test\\""]}');
+    expect(result[1]).toBe('{ "value": ["double quote \\"test\\""] }');
     assertIsJson(result[1]);
 });
 
 test('should parse an array of numbers', () => {
     const result = parseJson.toArrayOfPlainStringsOrJson('real json { "test": [ 1, 2, 3] }');
     expect(result[0]).toBe('real json ');
-    expect(result[1]).toBe('{ "test": [ 1, 2, 3] }');
+    expect(result[1]).toBe('{ "test": [1, 2, 3] }');
     assertIsJson(result[1]);
 });
 
 test('should cope with {}', () => {
     const result = parseJson.toArrayOfPlainStringsOrJson('is json {} abc');
     expect(result[0]).toBe('is json ');
-    expect(result[1]).toBe('{}');
+    expect(result[1]).toBe('{  }');
     expect(result[2]).toBe(' abc');
 });
 
@@ -94,7 +94,7 @@ test('should throw on {"}', () => {
 test('should cope with all kinds of whitespace', () => {
     const jsonWithQuotedWhiteSpace = ' {  \t "test"\t: \t 123 \r \n }';
     const result = parseJson.toString(jsonWithQuotedWhiteSpace);
-    expect(result).toBe(jsonWithQuotedWhiteSpace);
+    expect(result).toBe('{ "test": 123 }');
     assertIsJson(result);
 });
 
@@ -115,7 +115,7 @@ test('when changing a single quoted string to double quotes, needs to unquote th
 test('when changing a backtick quoted string to double quotes, needs to fix quotes', () => {
     const scenario = "{ `abc '\"`: `test'\"`, 'key': 123}";
     const result = parseJson.toString(scenario);
-    expect(result).toBe(`{ \"abc '\\\"\": \"test'\\\"\", \"key\": 123}`);
+    expect(result).toBe(`{ \"abc '\\\"\": \"test'\\\"\", \"key\": 123 }`);
     assertIsJson(result);
 });
 
@@ -194,6 +194,13 @@ test('should cope with overly stringified objects', () => {
     assertIsJson(result);
 });
 
+test('should concatenate strings with +', () => {
+    const object = '{ "abc": "test" + "test2" }';
+    const result = parseJson.toString(object);
+    expect(result).toBe('{ "abc": "testtest2" }');
+    assertIsJson(result);
+});
+
 test('should cope with Python true', () => {
     const object = '{ "abc": True }';
     const result = parseJson.toString(object);
@@ -220,7 +227,7 @@ test('should change noNe primitive to null', () => {
         "{'intent': {'slots': {'location': noNe}, 'confirmationState': 'None', 'name': 'JobSearch', 'state': 'InProgress'}, 'nluConfidence': 0.8}";
     const result = parseJson.toString(object);
     expect(result).toBe(
-        '{"intent": {"slots": {"location": null}, "confirmationState": "None", "name": "JobSearch", "state": "InProgress"}, "nluConfidence": 0.8}',
+        '{ "intent": { "slots": { "location": null }, "confirmationState": "None", "name": "JobSearch", "state": "InProgress" }, "nluConfidence": 0.8 }',
     );
     assertIsJson(result);
 });
@@ -265,7 +272,7 @@ test('should support trailing comma in array - 1', () => {
 test('should support trailing comma in array - 2', () => {
     let object = '{ arr: [1,2,3,]}';
     const result = parseJson.toString(object);
-    console.log(result);
+    expect(result).toBe('{ "arr": [1, 2, 3] }');
     assertIsJson(result);
 });
 
@@ -304,6 +311,21 @@ test('should cope with escaped double quotes used as quotes - aka Kibana', () =>
 
 test('should cope with escaped double quotes used as quotes - inside strings', () => {
     let object = `{\\"@metadata\\":{\\"message\\":\\"{\\\\"url\\\\": \\\\"hey\\\\"\\"}}`;
+    const result = parseJson.toString(object);
+    assertIsJson(result);
+});
+
+test('should cope with pretty formatted sloping double quotes as output by Word', () => {
+    let object = `{
+    "abc": “test”
+}`;
+    const result = parseJson.toString(object);
+    assertIsJson(result);
+});
+
+test('should cope with pretty formatted sloping double quotes as output by Word - case 2', () => {
+    let object = `{“abc”: “def”}`;
+
     const result = parseJson.toString(object);
     assertIsJson(result);
 });
