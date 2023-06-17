@@ -194,6 +194,20 @@ test('should cope with overly stringified objects', () => {
     assertIsJson(result);
 });
 
+test('should cope with Python true', () => {
+    const object = '{ "abc": True }';
+    const result = parseJson.toString(object);
+    expect(result).toBe('{ "abc": true }');
+    assertIsJson(result);
+});
+
+test('should cope with Python false', () => {
+    const object = '{ "abc": False }';
+    const result = parseJson.toString(object);
+    expect(result).toBe('{ "abc": false }');
+    assertIsJson(result);
+});
+
 test('should change None primitive to null', () => {
     const object = '{ "abc": None }';
     const result = parseJson.toString(object);
@@ -251,6 +265,7 @@ test('should support trailing comma in array - 1', () => {
 test('should support trailing comma in array - 2', () => {
     let object = '{ arr: [1,2,3,]}';
     const result = parseJson.toString(object);
+    console.log(result);
     assertIsJson(result);
 });
 

@@ -437,6 +437,16 @@ class ParseJson {
     eatPrimitive() {
         this.setCheckpoint();
         if (this.debug) console.log('eatPrimitive', this.position, this.inspected[this.position]);
+
+        if (
+            this.inspected[this.position].toLowerCase() === 'f' &&
+            this.inspected[this.position + 1].toLowerCase() === 'a' &&
+            this.inspected[this.position + 2].toLowerCase() === 'l' &&
+            this.inspected[this.position + 3].toLowerCase() === 's' &&
+            this.inspected[this.position + 4].toLowerCase() === 'e'
+        )
+            return this.eatFalse();
+
         if (
             this.inspected[this.position].toLowerCase() === 'n' &&
             this.inspected[this.position + 1].toLowerCase() === 'o' &&
@@ -445,6 +455,14 @@ class ParseJson {
         )
             return this.eatNone();
 
+        if (
+            this.inspected[this.position].toLowerCase() === 't' &&
+            this.inspected[this.position + 1].toLowerCase() === 'r' &&
+            this.inspected[this.position + 2].toLowerCase() === 'u' &&
+            this.inspected[this.position + 3].toLowerCase() === 'e'
+        )
+            return this.eatTrue();
+
         const primitiveRegex = /([0-9a-zA-Z-.])/;
         while (primitiveRegex.test(this.inspected[this.position])) {
             this.quoted += this.inspected[this.position];
@@ -452,9 +470,21 @@ class ParseJson {
         }
     }
 
+    eatFalse() {
+        if (this.debug) console.log('eatFalse', this.position, this.inspected[this.position]);
+        this.quoted += 'false';
+        this.position += 5;
+    }
+
     eatNone() {
         if (this.debug) console.log('eatNone', this.position, this.inspected[this.position]);
         this.quoted += 'null';
+        this.position += 4;
+    }
+
+    eatTrue() {
+        if (this.debug) console.log('eatTrue', this.position, this.inspected[this.position]);
+        this.quoted += 'true';
         this.position += 4;
     }
 }
