@@ -199,6 +199,12 @@ class ParseJson {
         if (this.inspected[this.position] === '`') return '`';
         if (this.inspected[this.position] === '“') return '”';
         if (this.inspected[this.position] === '\\' && this.inspected[this.position + 1] === '"') return '\\"';
+        if (
+            this.inspected[this.position] === '\\' &&
+            this.inspected[this.position + 1] === '\\' &&
+            this.inspected[this.position + 2] === '"'
+        )
+            return '\\\\"';
         return false;
     }
 
@@ -206,6 +212,12 @@ class ParseJson {
         if (quote.length === 1) return this.inspected[this.position] === quote;
         if (quote.length === 2)
             return this.inspected[this.position] === quote[0] && this.inspected[this.position + 1] === quote[1];
+        if (quote.length === 3)
+            return (
+                this.inspected[this.position] === quote[0] &&
+                this.inspected[this.position + 1] === quote[1] &&
+                this.inspected[this.position + 2] === quote[2]
+            );
         return false;
     }
 
@@ -338,6 +350,7 @@ class ParseJson {
             if (this.checkQuote(quote) && this.inspected[virtualPosition] === ',') return true;
             if (this.checkQuote(quote) && this.inspected[virtualPosition] === '}') return true;
             if (this.checkQuote(quote) && this.inspected[virtualPosition] === ']') return true;
+            if (this.checkQuote(quote) && this.inspected[virtualPosition] === '+') return true;
         } catch {
             if (this.debug) console.log('isEndQuoteMakingAllowanceForUnescapedSingleQuotes', this.position, false);
         }

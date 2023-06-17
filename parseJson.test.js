@@ -201,6 +201,20 @@ test('should concatenate strings with +', () => {
     assertIsJson(result);
 });
 
+test('should concatenate strings with + and preserve whitespace', () => {
+    const object = '{ "abc": "test" + "test2" + "test3" }';
+    const result = parseJson.toString(object);
+    expect(result).toBe('{ "abc": "testtest2test3" }');
+    assertIsJson(result);
+});
+
+test('should concatenate strings with different quotes', () => {
+    const object = `{ "abc": 'test' + \`test2\` + "test3" + \\"test4\\" }`;
+    const result = parseJson.toString(object);
+    expect(result).toBe('{ "abc": "testtest2test3test4" }');
+    assertIsJson(result);
+});
+
 test('should cope with Python true', () => {
     const object = '{ "abc": True }';
     const result = parseJson.toString(object);
@@ -312,6 +326,20 @@ test('should cope with escaped double quotes used as quotes - aka Kibana', () =>
 test('should cope with escaped double quotes used as quotes - inside strings', () => {
     let object = `{\\"@metadata\\":{\\"message\\":\\"{\\\\"url\\\\": \\\\"hey\\\\"\\"}}`;
     const result = parseJson.toString(object);
+    assertIsJson(result);
+});
+
+test('should cope with double escaped double quotes used as quotes - case 1', () => {
+    let object = `{ \\\\"test\\\\": \\\\"test1\\\\" }`;
+    const result = parseJson.toString(object);
+    expect(result).toBe('{ "test": "test1" }');
+    assertIsJson(result);
+});
+
+test('should cope with double escaped double quotes used as quotes - case 2', () => {
+    let object = `{\\"@metadata\\":{\\"message\\":\\"{\\\\"url\\\\": \\\\"hey\\\\"}\\"}}`;
+    const result = parseJson.toString(object);
+    expect(result).toBe('{ "@metadata": { "message": "{\\"url\\": \\"hey\\"}" } }');
     assertIsJson(result);
 });
 
