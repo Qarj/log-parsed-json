@@ -173,6 +173,7 @@ test('{} is valid json', () => {
 test('should play nice with empty objects', () => {
     const scenario = '{ "t": [], "a": {} }';
     const result = parseJson.toString(scenario);
+    expect(result).toBe('{ "t": [], "a": {  } }');
     assertIsJson(result);
 });
 
@@ -191,6 +192,9 @@ test('should cope with overly stringified objects', () => {
     };
     const scenario = JSON.stringify(JSON.stringify(JSON.stringify(JSON.stringify(object))));
     const result = parseJson.toString(scenario);
+    expect(result).toBe(
+        `{ "arr\\"ay": [1, { "obj\\"ec'}t": { "\\n\\nk\\"'ey": "\\"\\"''',value" } }, [], {  }, true, null] }`,
+    );
     assertIsJson(result);
 });
 
@@ -367,6 +371,46 @@ metadata: {'filters':['Movie', 'Percentage Viewed' ] , 'params':{'content':'Come
 }`;
     const result = parseJson.toString(object);
     assertIsJson(result);
+});
+
+test('should insert missing commas between key value pairs', () => {
+    let object = `{
+    "abc": "def"
+    "ghi": "jkl"
+}`;
+    const result = parseJson.toString(object);
+    expect(result).toBe('{ "abc": "def", "ghi": "jkl" }');
+    assertIsJson(result);
+});
+
+test('should insert missing commas between key value pairs - case 2', () => {
+    let object = `{
+    "abc": "def"
+    "ghi": "jkl"
+    "mno": "pqr"
+}`;
+    const result = parseJson.toString(object);
+    expect(result).toBe('{ "abc": "def", "ghi": "jkl", "mno": "pqr" }');
+    assertIsJson(result);
+});
+
+test('should insert missing commas between array elements', () => {
+    let object = `{
+    "abc": [
+        "def"
+        "ghi" 3 true null
+    ]
+}`;
+    const result = parseJson.toString(object);
+    expect(result).toBe('{ "abc": ["def", "ghi", 3, true, null] }');
+    assertIsJson(result);
+});
+
+test('should error the right way given broken json', () => {
+    let object = `{ "test": "bad  { "test": "good" }`;
+    expect(() => {
+        parseJson.toString(object);
+    }).toThrow('Unexpected quote in unquoted key');
 });
 
 test('should run quickly and not have catatrophic garbage collection', () => {

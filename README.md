@@ -10,15 +10,20 @@ Recursively dumps JSON objects found inside other JSON objects, even if they are
 
 As well as regular stringified JSON, it copes with much of the output from util.inspect() for standard JSON-like data objects, including circular references.
 
-Python None is changed to null.
-
-Trailing commas are removed.
-
-Unescaped single quotes in single quoted strings are handled, so long as they are not followed by a comma or close curly brace (ignoring whitespace).
-
 Escaped quotes as used in Kibana logs are handled. E.g. `{\"@metadata\": \"value\"}`
 
 Intended to help with debugging, particulary in situations where you have for example Kibana logs containing JSON within JSON.
+
+## Automatic Repairs to JSON
+
+-   Change Python None to null
+-   Change Python True and False to true and false
+-   Insert missing commas between key value pairs
+-   Insert missing commas between array elements
+-   Remove trailing commas
+-   Add quotes to keys
+-   Convert single quotes, backticks, curly quotes, escaped double quotes and double escaped double quotes to double quotes
+-   Unescaped single quotes in single quoted strings are handled, so long as they are not followed by a comma or close curly brace (ignoring whitespace).
 
 ## Installation
 
