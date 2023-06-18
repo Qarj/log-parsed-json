@@ -201,16 +201,13 @@ class ParseJson {
     }
 
     getQuote() {
-        if (this.inspected[this.position] === "'") return "'";
-        if (this.inspected[this.position] === '"') return '"';
-        if (this.inspected[this.position] === '`') return '`';
-        if (this.inspected[this.position] === '“') return '”';
-        if (this.inspected[this.position] === '\\' && this.inspected[this.position + 1] === '"') return '\\"';
-        if (
-            this.inspected[this.position] === '\\' &&
-            this.inspected[this.position + 1] === '\\' &&
-            this.inspected[this.position + 2] === '"'
-        )
+        const { inspected } = this;
+        if (inspected[this.position] === "'") return "'";
+        if (inspected[this.position] === '"') return '"';
+        if (inspected[this.position] === '`') return '`';
+        if (inspected[this.position] === '“') return '”';
+        if (inspected[this.position] === '\\' && inspected[this.position + 1] === '"') return '\\"';
+        if (inspected[this.position] === '\\' && inspected[this.position + 1] === '\\' && inspected[this.position + 2] === '"')
             return '\\\\"';
         return false;
     }
