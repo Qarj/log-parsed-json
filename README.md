@@ -226,4 +226,4 @@ curl 'https://jsonplaceholder.typicode.com/todos/1' | pretty
 
 ## See also
 
-Python version of this project: https://pypi.org/project/fix-busted-json/
+Python version of this project: [https://pypi.org/project/fix-busted-json/](https://pypi.org/project/fix-busted-json/)
