@@ -71,8 +71,9 @@ class ParseJson {
     }
 
     eatPlainText() {
-        while (this.inspected[this.position] !== '{' && this.position < this.inspected.length) {
-            this.quoted.push(this.inspected[this.position]);
+        const { inspected } = this;
+        while (inspected[this.position] !== '{' && this.position < inspected.length) {
+            this.quoted.push(inspected[this.position]);
             this.position++;
         }
     }
@@ -199,14 +200,13 @@ class ParseJson {
     }
 
     getQuote() {
-        const { inspected } = this;
-        if (inspected[this.position] === "'") return "'";
-        if (inspected[this.position] === '"') return '"';
-        if (inspected[this.position] === '`') return '`';
-        if (inspected[this.position] === '“') return '”';
-        if (inspected[this.position] === '\\' && inspected[this.position + 1] === '"') return '\\"';
-        if (inspected[this.position] === '\\' && inspected[this.position + 1] === '\\' && inspected[this.position + 2] === '"')
-            return '\\\\"';
+        const { inspected, position } = this;
+        if (inspected[position] === "'") return "'";
+        if (inspected[position] === '"') return '"';
+        if (inspected[position] === '`') return '`';
+        if (inspected[position] === '“') return '”';
+        if (inspected[position] === '\\' && inspected[position + 1] === '"') return '\\"';
+        if (inspected[position] === '\\' && inspected[position + 1] === '\\' && inspected[position + 2] === '"') return '\\\\"';
         return false;
     }
 
