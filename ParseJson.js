@@ -15,7 +15,7 @@ class ParseJson {
     }
 
     setCheckpoint() {
-        if (this.debug) console.log('setCheckpoint', this.position, this.inspected[this.position]);
+        this.log('setCheckpoint');
         this.checkpoint = this.position;
         this.checkpointQuoted = this.quoted;
     }
@@ -80,7 +80,7 @@ class ParseJson {
     }
 
     eatObject() {
-        if (this.debug) console.log('eatObject', this.position, this.inspected[this.position]);
+        this.log('eatObject');
         this.eatWhitespace();
         this.eatOpenBrace();
         this.eatKeyValuePairs();
@@ -90,7 +90,7 @@ class ParseJson {
 
     eatKeyValuePairs() {
         while (true) {
-            if (this.debug) console.log('eatKeyValuePairs', this.position, this.inspected[this.position]);
+            this.log('eatKeyValuePairs');
             this.eatWhitespace();
             if (this.inspected[this.position] === '}') {
                 this.removeTrailingCommaIfPresent();
@@ -122,7 +122,7 @@ class ParseJson {
     }
 
     eatReference() {
-        if (this.debug) console.log('eatReference', this.position, this.inspected[this.position]);
+        this.log('eatReference');
         this.setCheckpoint();
         this.eatOpenAngleBracket();
         this.eatWhitespace();
@@ -155,7 +155,7 @@ class ParseJson {
     }
 
     eatNumber() {
-        if (this.debug) console.log('eatNumber', this.position, this.inspected[this.position]);
+        this.log('eatNumber');
         const numberRegex = /[0-9]/;
         while (numberRegex.test(this.inspected[this.position])) {
             this.position++;
@@ -189,7 +189,7 @@ class ParseJson {
     }
 
     eatCloseBrace() {
-        if (this.debug) console.log('eatCloseBrace', this.position, this.inspected[this.position]);
+        this.log('eatCloseBrace');
         if (this.inspected[this.position] !== '}') throw new Error('Expected close brace');
         this.quoted.push(' ', this.inspected[this.position]);
         this.position++;
@@ -234,7 +234,7 @@ class ParseJson {
     }
 
     eatQuotedKey() {
-        if (this.debug) console.log('eatQuotedKey', this.position, this.inspected[this.position]);
+        this.log('eatQuotedKey');
         this.setCheckpoint();
         this.throwIfJsonSpecialCharacter(this.inspected[this.position]);
         const quote = this.getQuote();
@@ -244,20 +244,20 @@ class ParseJson {
         while (!this.checkQuote(quote)) {
             this.eatCharOrEscapedChar(quote);
         }
-        if (this.debug) console.log('eatQuotedKey end', this.position, this.inspected[this.position]);
+        this.log('eatQuotedKey end');
         this.quoted.push('"');
         this.position++;
         this.eatQuoteAdditional(quote);
     }
 
     eatUnquotedKey() {
-        if (this.debug) console.log('eatUnquotedKey', this.position, this.inspected[this.position]);
+        this.log('eatUnquotedKey');
         this.setCheckpoint();
         if (this.inspected[this.position] === '[') return this.eatNullKey();
         this.throwIfJsonSpecialCharacter(this.inspected[this.position]);
         this.quoted.push('"');
         while (this.inspected[this.position] !== ':' && this.inspected[this.position] !== ' ') {
-            if (this.debug) console.log('eatUnquotedKey loop', this.position, this.inspected[this.position]);
+            this.log('eatUnquotedKey loop');
             if (this.getQuote()) throw new Error('Unexpected quote in unquoted key');
             this.quoted.push(this.inspected[this.position]);
             this.position++;
@@ -267,7 +267,7 @@ class ParseJson {
 
     eatNullKey() {
         const { inspected } = this;
-        if (this.debug) console.log('eatNullKey', this.position, inspected[this.position]);
+        this.log('eatNullKey');
         if (inspected[this.position] !== '[') throw new Error('Expected open bracket');
         this.position++;
         if (inspected[this.position].toLowerCase() !== 'n') throw new Error('Expected n');
@@ -296,7 +296,7 @@ class ParseJson {
     }
 
     eatValue() {
-        if (this.debug) console.log('eatValue', this.position, this.inspected[this.position]);
+        this.log('eatValue');
         switch (this.inspected[this.position]) {
             case '{':
                 this.eatObject();
@@ -316,7 +316,7 @@ class ParseJson {
 
     eatString() {
         this.setCheckpoint();
-        if (this.debug) console.log('eatString', this.position, this.inspected[this.position]);
+        this.log('eatString');
         let quote = this.getQuote();
         if (this.debug) console.log('eatString quote', quote);
         this.quoted.push('"');
@@ -325,7 +325,7 @@ class ParseJson {
         while (!this.isEndQuoteMakingAllowanceForUnescapedSingleQuote(quote)) {
             this.eatCharOrEscapedChar(quote);
         }
-        if (this.debug) console.log('end eatString', this.position, this.inspected[this.position]);
+        this.log('eatString end');
         this.quoted.push('"');
         this.position++;
         this.eatQuoteAdditional(quote);
@@ -335,7 +335,7 @@ class ParseJson {
         const virtualPosition = this.eatVirtualWhiteSpace(this.position + 1);
         if (this.inspected[virtualPosition] !== '+') return;
 
-        if (this.debug) console.log('eatConcatenatedStrings', this.position, this.inspected[this.position]);
+        this.log('eatConcatenatedStrings');
 
         this.position = virtualPosition + 1;
         this.eatWhitespace();
@@ -348,7 +348,7 @@ class ParseJson {
         while (!this.isEndQuoteMakingAllowanceForUnescapedSingleQuote(quote)) {
             this.eatCharOrEscapedChar(quote);
         }
-        if (this.debug) console.log('end eatString', this.position, this.inspected[this.position]);
+        this.log('eatString end');
         this.quoted.push('"');
         this.position++;
         this.eatQuoteAdditional(quote);
@@ -384,13 +384,13 @@ class ParseJson {
         if (debug)
             console.log('eatCharOrEscapedChar', this.position, inspected[this.position], ' ' + inspected[this.position].charCodeAt(0));
         if (inspected[this.position] === '\\' && !this.checkQuote(quote)) {
-            if (debug) console.log('eatCharOrEscapedChar escape', this.position, inspected[this.position]);
+            this.log('eatCharOrEscapedChar escape');
             if (this.isDoubleEscapedDoubleQuote()) {
                 if (debug) console.log('eatCharOrEscapedChar unescape double quote', this.position);
                 this.position++;
             }
             if ((quote === "'" || quote === '`') && inspected[this.position + 1] === quote) {
-                if (debug) console.log('eatCharOrEscapedChar unescape single quote', this.position, inspected[this.position]);
+                this.log('eatCharOrEscapedChar unescape single quote');
             } else quoted.push(inspected[this.position]);
             this.position++;
         }
@@ -400,7 +400,7 @@ class ParseJson {
     }
 
     eatArray() {
-        if (this.debug) console.log('eatArray', this.position, this.inspected[this.position]);
+        this.log('eatArray');
         if (this.inspected[this.position] !== '[') throw new Error('Expected array');
         this.quoted.push(this.inspected[this.position]);
         this.position++;
@@ -449,7 +449,7 @@ class ParseJson {
     }
 
     eatCircular() {
-        if (this.debug) console.log('eatCircular', this.position, this.inspected[this.position]);
+        this.log('eatCircular');
         const testRegex = /[Circular *\d]/;
         while (testRegex.test(this.inspected[this.position])) {
             this.position++;
@@ -458,7 +458,7 @@ class ParseJson {
     }
 
     eatComma() {
-        if (this.debug) console.log('eatComma', this.position, this.inspected[this.position]);
+        this.log('eatComma');
         if (this.inspected[this.position] !== ',') throw new Error('Expected comma');
         this.quoted.push(this.inspected[this.position], ' ');
         this.quotedLastCommaPosition = this.quoted.length - 2;
@@ -468,6 +468,7 @@ class ParseJson {
 
     eatCloseBracket() {
         if (this.debug) console.log('eatCloseBracket', this.position, this.inspected[this.position]);
+        this.log('eatCloseBracket');
         if (this.inspected[this.position] !== ']') throw new Error('Expected close bracket');
         this.quoted.push(this.inspected[this.position]);
         this.position++;
@@ -515,21 +516,25 @@ class ParseJson {
     }
 
     eatFalse() {
-        if (this.debug) console.log('eatFalse', this.position, this.inspected[this.position]);
+        this.log('eatFalse');
         this.quoted.push('false');
         this.position += 5;
     }
 
     eatNone() {
-        if (this.debug) console.log('eatNone', this.position, this.inspected[this.position]);
+        this.log('eatNone');
         this.quoted.push('null');
         this.position += 4;
     }
 
     eatTrue() {
-        if (this.debug) console.log('eatTrue', this.position, this.inspected[this.position]);
+        this.log('eatTrue');
         this.quoted.push('true');
         this.position += 4;
+    }
+
+    log(note) {
+        if (this.debug) console.log(note, this.position, this.inspected[this.position]);
     }
 }
 
