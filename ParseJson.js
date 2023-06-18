@@ -20,7 +20,7 @@ class ParseJson {
         this.checkpointQuoted = this.quoted;
     }
 
-    toString() {
+    repairJson() {
         this.resetPointer();
         this.eatObject();
         return this.quoted.join('');

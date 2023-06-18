@@ -54,9 +54,9 @@ function logPretty(obj) {
     }
 }
 
-function toString(input) {
+function repairJson(input) {
     const parseJson = new ParseJson(input);
-    return parseJson.toString();
+    return parseJson.repairJson();
 }
 
 function toArrayOfPlainStringsOrJson(input) {
@@ -67,7 +67,7 @@ function toArrayOfPlainStringsOrJson(input) {
 function canParseJson(input) {
     const parseJson = new ParseJson(input);
     try {
-        parseJson.toString();
+        parseJson.repairJson();
         return true;
     } catch (e) {
         return false;
@@ -105,7 +105,7 @@ function jsonMatching(input, regex) {
 
 module.exports = {
     log,
-    toString,
+    repairJson,
     toArrayOfPlainStringsOrJson,
     canParseJson,
     firstJson,

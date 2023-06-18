@@ -114,9 +114,9 @@ test('should log json in json with colours', (done) => {
 
 test('should handle destructure before json', (done) => {
     setTestHelperArguments({
-        value: `const { toString } = require('log-parsed-json');
+        value: `const { repairJson } = require('log-parsed-json');
 
-    console.log(toString("{ 'k1': 'v1', 'k2': 123 }"));`,
+    console.log(repairJson("{ 'k1': 'v1', 'k2': 123 }"));`,
     });
     const positiveAssertions = ['k1', '39m', '32m', '33m123'];
     const negativeAssertions = [];

@@ -31,6 +31,28 @@ Intended to help with debugging, particulary in situations where you have for ex
 npm install log-parsed-json
 ```
 
+## Find and handle the JSON output from Large Language Models
+
+Sometimes large language models output JSON like strings, but with a few quirks.
+This can happen with gpt-3.5-turbo and gpt-4 for example.
+
+```javascript
+const { firstJson } = require('log-parsed-json');
+
+const completion = `Thought: "I need to search for developer jobs in London"
+Action: SearchTool
+ActionInput: { location: "London", 'title': "developer" }
+`;
+
+console.log(firstJson(completion));
+```
+
+Gives output
+
+```json
+{ "location": "London", "title": "developer" }
+```
+
 ## Usage - pretty printing JSONs found within a string
 
 ```javascript
@@ -48,9 +70,9 @@ Result
 util.inspect()'s output is not JSON.parse() friendly.
 
 ```javascript
-const { toString } = require('log-parsed-json');
+const { repairJson } = require('log-parsed-json');
 
-console.log(toString(`{ 'k1': 'v1', 'k2': 123 }`));
+console.log(repairJson(`{ 'k1': 'v1', 'k2': 123 }`));
 ```
 
 Result
@@ -62,7 +84,7 @@ Result
 Mentions of circular are just turned into a string, and any refs within the object are removed.
 
 ```javascript
-console.log(toString("{ a: 'somestring', b: 42, e: { c: 82, d: [Circular *1] } }"));
+console.log(repairJson("{ a: 'somestring', b: 42, e: { c: 82, d: [Circular *1] } }"));
 ```
 
 Result
@@ -93,7 +115,7 @@ Result
 
 ## Usage - canParseJson
 
-Returns true or false based on if `toString()` would return a valid JSON string.
+Returns true or false based on if `repairJson()` would return a valid JSON string.
 
 ```javascript
 const { canParseJson } = require('log-parsed-json');

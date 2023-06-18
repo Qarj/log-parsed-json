@@ -19,4 +19,4 @@ scenario = `{
 }
 `;
 console.log(scenario);
-console.log(parse.toString(scenario));
+console.log(parse.repairJson(scenario));
