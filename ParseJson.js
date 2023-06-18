@@ -8,7 +8,7 @@ class ParseJson {
 
     resetPointer() {
         this.position = 0;
-        this.quoted = '';
+        this.quoted = [];
         this.checkpoint = 0;
         this.checkpointQuoted = '';
         this.quotedLastCommaPosition = undefined;
@@ -23,7 +23,7 @@ class ParseJson {
     toString() {
         this.resetPointer();
         this.eatObject();
-        return this.quoted;
+        return this.quoted.join('');
     }
 
     deStringify(string) {
@@ -49,10 +49,10 @@ class ParseJson {
         this.resetPointer();
         let recoveryPosition = 0;
         while (this.position < this.inspected.length) {
-            this.quoted = '';
+            this.quoted = [];
             this.eatPlainText();
-            result.push(this.quoted);
-            this.quoted = '';
+            result.push(this.quoted.join(''));
+            this.quoted = [];
             if (this.position >= this.inspected.length) break;
             if (this.inspected[this.position] === '{') {
                 recoveryPosition = this.position + 1;
@@ -62,12 +62,12 @@ class ParseJson {
                 } catch (e) {
                     if (this.debug)
                         console.log('error root eat object', e, this.position, this.inspected[this.position]);
-                    this.quoted += '{';
+                    this.quoted.push['{'];
                     this.position = recoveryPosition;
                 }
             }
 
-            result.push(this.quoted);
+            result.push(this.quoted.join(''));
         }
 
         return result;
@@ -75,7 +75,7 @@ class ParseJson {
 
     eatPlainText() {
         while (this.inspected[this.position] !== '{' && this.position < this.inspected.length) {
-            this.quoted += this.inspected[this.position];
+            this.quoted.push(this.inspected[this.position]);
             this.position++;
         }
     }
@@ -111,7 +111,7 @@ class ParseJson {
             if (this.inspected[this.position] === ',') {
                 this.eatComma();
             } else if (this.inspected[this.position] !== '}') {
-                this.quoted += ', '; // Insert missing comma
+                this.quoted.push(', '); // Insert missing comma
             }
         }
     }
@@ -185,14 +185,14 @@ class ParseJson {
 
     eatOpenBrace() {
         if (this.inspected[this.position] !== '{') throw new Error('Expected open brace');
-        this.quoted += this.inspected[this.position] + ' ';
+        this.quoted.push(this.inspected[this.position], ' ');
         this.position++;
     }
 
     eatCloseBrace() {
         if (this.debug) console.log('eatCloseBrace', this.position, this.inspected[this.position]);
         if (this.inspected[this.position] !== '}') throw new Error('Expected close brace');
-        this.quoted += ' ' + this.inspected[this.position];
+        this.quoted.push(' ', this.inspected[this.position]);
         this.position++;
     }
 
@@ -242,14 +242,14 @@ class ParseJson {
         this.setCheckpoint();
         this.throwIfJsonSpecialCharacter(this.inspected[this.position]);
         const quote = this.getQuote();
-        this.quoted += '"';
+        this.quoted.push('"');
         this.position++;
         this.eatQuoteAdditional(quote);
         while (!this.checkQuote(quote)) {
             this.eatCharOrEscapedChar(quote);
         }
         if (this.debug) console.log('eatQuotedKey end', this.position, this.inspected[this.position]);
-        this.quoted += '"';
+        this.quoted.push('"');
         this.position++;
         this.eatQuoteAdditional(quote);
     }
@@ -259,14 +259,14 @@ class ParseJson {
         this.setCheckpoint();
         if (this.inspected[this.position] === '[') return this.eatNullKey();
         this.throwIfJsonSpecialCharacter(this.inspected[this.position]);
-        this.quoted += '"';
+        this.quoted.push('"');
         while (this.inspected[this.position] !== ':' && this.inspected[this.position] !== ' ') {
             if (this.debug) console.log('eatUnquotedKey loop', this.position, this.inspected[this.position]);
             if (this.getQuote()) throw new Error('Unexpected quote in unquoted key');
-            this.quoted += this.inspected[this.position];
+            this.quoted.push(this.inspected[this.position]);
             this.position++;
         }
-        this.quoted += '"';
+        this.quoted.push('"');
     }
 
     eatNullKey() {
@@ -283,7 +283,7 @@ class ParseJson {
         this.position++;
         if (this.inspected[this.position] !== ']') throw new Error('Expected close bracket');
         this.position++;
-        this.quoted += '"null"';
+        this.quoted.push('"null"');
     }
 
     throwIfJsonSpecialCharacter(char) {
@@ -294,7 +294,7 @@ class ParseJson {
 
     eatColon() {
         if (this.inspected[this.position] !== ':') throw new Error('Expected colon');
-        this.quoted += this.inspected[this.position] + ' ';
+        this.quoted.push(this.inspected[this.position], ' ');
         this.position++;
     }
 
@@ -317,14 +317,14 @@ class ParseJson {
         if (this.debug) console.log('eatString', this.position, this.inspected[this.position]);
         let quote = this.getQuote();
         if (this.debug) console.log('eatString quote', quote);
-        this.quoted += '"';
+        this.quoted.push('"');
         this.position++;
         this.eatQuoteAdditional(quote);
         while (!this.isEndQuoteMakingAllowanceForUnescapedSingleQuote(quote)) {
             this.eatCharOrEscapedChar(quote);
         }
         if (this.debug) console.log('end eatString', this.position, this.inspected[this.position]);
-        this.quoted += '"';
+        this.quoted.push('"');
         this.position++;
         this.eatQuoteAdditional(quote);
     }
@@ -337,7 +337,7 @@ class ParseJson {
 
         this.position = virtualPosition + 1;
         this.eatWhitespace();
-        this.quoted = this.quoted.slice(0, -1); // Remove the closing quote of the previous string
+        this.quoted.pop();
 
         let quote = this.getQuote();
         if (this.debug) console.log('quote', quote);
@@ -347,7 +347,7 @@ class ParseJson {
             this.eatCharOrEscapedChar(quote);
         }
         if (this.debug) console.log('end eatString', this.position, this.inspected[this.position]);
-        this.quoted += '"';
+        this.quoted.push('"');
         this.position++;
         this.eatQuoteAdditional(quote);
 
@@ -401,18 +401,18 @@ class ParseJson {
                         this.position,
                         this.inspected[this.position],
                     );
-            } else this.quoted += this.inspected[this.position];
+            } else this.quoted.push(this.inspected[this.position]);
             this.position++;
         }
-        if ((quote === "'" || quote === '`') && this.inspected[this.position] === '"') this.quoted += '\\';
-        this.quoted += this.inspected[this.position];
+        if ((quote === "'" || quote === '`') && this.inspected[this.position] === '"') this.quoted.push('\\');
+        this.quoted.push(this.inspected[this.position]);
         this.position++;
     }
 
     eatArray() {
         if (this.debug) console.log('eatArray', this.position, this.inspected[this.position]);
         if (this.inspected[this.position] !== '[') throw new Error('Expected array');
-        this.quoted += this.inspected[this.position];
+        this.quoted.push(this.inspected[this.position]);
         this.position++;
 
         while (true) {
@@ -429,17 +429,16 @@ class ParseJson {
             if (this.inspected[this.position] === ',') {
                 this.eatComma();
             } else if (this.inspected[this.position] !== ']') {
-                this.quoted += ', '; // Insert missing comma
+                this.quoted.push(', '); // Insert missing comma
             }
         }
         this.eatCloseBracket();
     }
 
     removeTrailingCommaIfPresent() {
-        if (this.quotedLastCommaPosition)
-            this.quoted =
-                this.quoted.slice(0, this.quotedLastCommaPosition) +
-                this.quoted.slice(this.quotedLastCommaPosition + 2);
+        if (this.quotedLastCommaPosition !== undefined) {
+            this.quoted.splice(this.quotedLastCommaPosition, 2);
+        }
         this.quotedLastCommaPosition = undefined;
     }
 
@@ -464,13 +463,13 @@ class ParseJson {
         while (testRegex.test(this.inspected[this.position])) {
             this.position++;
         }
-        this.quoted += '"Circular"';
+        this.quoted.push('"Circular"');
     }
 
     eatComma() {
         if (this.debug) console.log('eatComma', this.position, this.inspected[this.position]);
         if (this.inspected[this.position] !== ',') throw new Error('Expected comma');
-        this.quoted += this.inspected[this.position] + ' ';
+        this.quoted.push(this.inspected[this.position], ' ');
         this.quotedLastCommaPosition = this.quoted.length - 2;
         this.position++;
         return true;
@@ -479,7 +478,7 @@ class ParseJson {
     eatCloseBracket() {
         if (this.debug) console.log('eatCloseBracket', this.position, this.inspected[this.position]);
         if (this.inspected[this.position] !== ']') throw new Error('Expected close bracket');
-        this.quoted += this.inspected[this.position];
+        this.quoted.push(this.inspected[this.position]);
         this.position++;
         return false;
     }
@@ -515,26 +514,26 @@ class ParseJson {
 
         const primitiveRegex = /([0-9a-zA-Z-.])/;
         while (primitiveRegex.test(this.inspected[this.position])) {
-            this.quoted += this.inspected[this.position];
+            this.quoted.push(this.inspected[this.position]);
             this.position++;
         }
     }
 
     eatFalse() {
         if (this.debug) console.log('eatFalse', this.position, this.inspected[this.position]);
-        this.quoted += 'false';
+        this.quoted.push('false');
         this.position += 5;
     }
 
     eatNone() {
         if (this.debug) console.log('eatNone', this.position, this.inspected[this.position]);
-        this.quoted += 'null';
+        this.quoted.push('null');
         this.position += 4;
     }
 
     eatTrue() {
         if (this.debug) console.log('eatTrue', this.position, this.inspected[this.position]);
-        this.quoted += 'true';
+        this.quoted.push('true');
         this.position += 4;
     }
 }
