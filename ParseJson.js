@@ -266,18 +266,19 @@ class ParseJson {
     }
 
     eatNullKey() {
-        if (this.debug) console.log('eatNullKey', this.position, this.inspected[this.position]);
-        if (this.inspected[this.position] !== '[') throw new Error('Expected open bracket');
+        const { inspected } = this;
+        if (this.debug) console.log('eatNullKey', this.position, inspected[this.position]);
+        if (inspected[this.position] !== '[') throw new Error('Expected open bracket');
         this.position++;
-        if (this.inspected[this.position].toLowerCase() !== 'n') throw new Error('Expected n');
+        if (inspected[this.position].toLowerCase() !== 'n') throw new Error('Expected n');
         this.position++;
-        if (this.inspected[this.position].toLowerCase() !== 'u') throw new Error('Expected u');
+        if (inspected[this.position].toLowerCase() !== 'u') throw new Error('Expected u');
         this.position++;
-        if (this.inspected[this.position].toLowerCase() !== 'l') throw new Error('Expected l');
+        if (inspected[this.position].toLowerCase() !== 'l') throw new Error('Expected l');
         this.position++;
-        if (this.inspected[this.position].toLowerCase() !== 'l') throw new Error('Expected l');
+        if (inspected[this.position].toLowerCase() !== 'l') throw new Error('Expected l');
         this.position++;
-        if (this.inspected[this.position] !== ']') throw new Error('Expected close bracket');
+        if (inspected[this.position] !== ']') throw new Error('Expected close bracket');
         this.position++;
         this.quoted.push('"null"');
     }
