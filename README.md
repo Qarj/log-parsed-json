@@ -18,7 +18,7 @@ Intended to help with debugging, particulary in situations where you have for ex
 
 -   Change Python None to null
 -   Change Python True and False to true and false
--   Insert missing commas between key value pairs
+-   Insert missing commas between key-value pairs
 -   Insert missing commas between array elements
 -   Remove trailing commas
 -   Add quotes to keys
@@ -222,3 +222,7 @@ echo abc { a: 2 } abc | pretty
 
 curl 'https://jsonplaceholder.typicode.com/todos/1' | pretty
 ```
+
+## See also
+
+Python version of this project: https://pypi.org/project/fix-busted-json/
