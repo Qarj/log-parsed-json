@@ -23,6 +23,7 @@ Intended to help with debugging, particulary in situations where you have for ex
 -   Remove trailing commas
 -   Add quotes to keys
 -   Convert single quotes, backticks, curly quotes, escaped double quotes and double escaped double quotes to double quotes
+-   Merge strings concatenated with a `+` to a single string
 
 ## Installation
 
