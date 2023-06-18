@@ -374,36 +374,29 @@ class ParseJson {
     }
 
     isDoubleEscapedDoubleQuote() {
-        if (this.position + 2 >= this.inspected.length) return false;
-        return (
-            this.inspected[this.position] === '\\' &&
-            this.inspected[this.position + 1] === '\\' &&
-            this.inspected[this.position + 2] === '"'
-        );
+        const { position, inspected } = this;
+        if (position + 2 >= inspected.length) return false;
+        return inspected[position] === '\\' && inspected[position + 1] === '\\' && inspected[position + 2] === '"';
     }
 
     eatCharOrEscapedChar(quote) {
-        if (this.position >= this.inspected.length) throw new Error('Unexpected end of quoted key or string');
-        if (this.debug)
-            console.log(
-                'eatCharOrEscapedChar',
-                this.position,
-                this.inspected[this.position],
-                ' ' + this.inspected[this.position].charCodeAt(0),
-            );
+        const { debug, inspected, quoted } = this;
+        if (this.position >= inspected.length) throw new Error('Unexpected end of quoted key or string');
+        if (debug)
+            console.log('eatCharOrEscapedChar', this.position, inspected[this.position], ' ' + inspected[this.position].charCodeAt(0));
         if (!this.checkQuote(quote) && this.inspected[this.position] === '\\') {
-            if (this.debug) console.log('eatCharOrEscapedChar escape', this.position, this.inspected[this.position]);
+            if (debug) console.log('eatCharOrEscapedChar escape', this.position, inspected[this.position]);
             if (this.isDoubleEscapedDoubleQuote()) {
                 if (this.debug) console.log('eatCharOrEscapedChar unescape double quote', this.position);
                 this.position++;
             }
-            if ((quote === "'" || quote === '`') && this.inspected[this.position + 1] === quote) {
-                if (this.debug) console.log('eatCharOrEscapedChar unescape single quote', this.position, this.inspected[this.position]);
-            } else this.quoted.push(this.inspected[this.position]);
+            if ((quote === "'" || quote === '`') && inspected[this.position + 1] === quote) {
+                if (this.debug) console.log('eatCharOrEscapedChar unescape single quote', this.position, inspected[this.position]);
+            } else quoted.push(this.inspected[this.position]);
             this.position++;
         }
-        if ((quote === "'" || quote === '`') && this.inspected[this.position] === '"') this.quoted.push('\\');
-        this.quoted.push(this.inspected[this.position]);
+        if ((quote === "'" || quote === '`') && inspected[this.position] === '"') quoted.push('\\');
+        quoted.push(inspected[this.position]);
         this.position++;
     }
 
