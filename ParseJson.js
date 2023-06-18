@@ -211,15 +211,11 @@ class ParseJson {
     }
 
     checkQuote(quote) {
-        const { inspected } = this;
-        if (quote.length === 1) return inspected[this.position] === quote;
-        if (quote.length === 2) return inspected[this.position] === quote[0] && inspected[this.position + 1] === quote[1];
+        const { inspected, position } = this;
+        if (quote.length === 1) return inspected[position] === quote;
+        if (quote.length === 2) return inspected[position] === quote[0] && inspected[position + 1] === quote[1];
         if (quote.length === 3)
-            return (
-                inspected[this.position] === quote[0] &&
-                inspected[this.position + 1] === quote[1] &&
-                inspected[this.position + 2] === quote[2]
-            );
+            return inspected[position] === quote[0] && inspected[position + 1] === quote[1] && inspected[position + 2] === quote[2];
         return false;
     }
 
