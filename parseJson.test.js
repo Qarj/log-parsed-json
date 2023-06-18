@@ -15,7 +15,9 @@ test('should return valid json string from inspected output', () => {
 });
 
 test('should return array of strings and json strings', () => {
-    const result = parseJson.toArrayOfPlainStringsOrJson("text before { test: 'test', array: ['test', { test: 'test' }] } text after");
+    const result = parseJson.toArrayOfPlainStringsOrJson(
+        "text before { test: 'test', array: ['test', { test: 'test' }] } text after",
+    );
     expect(result[0]).toBe('text before ');
     expect(result[1]).toBe('{ "test": "test", "array": ["test", { "test": "test" }] }');
     expect(result[2]).toBe(' text after');
@@ -23,13 +25,17 @@ test('should return array of strings and json strings', () => {
 });
 
 test('should return first valid json object', () => {
-    const result = parseJson.firstJson("text before { test: 'test', array: ['test', { test: 'test' }] } text { hey: 1 } after");
+    const result = parseJson.firstJson(
+        "text before { test: 'test', array: ['test', { test: 'test' }] } text { hey: 1 } after",
+    );
     expect(result).toBe('{ "test": "test", "array": ["test", { "test": "test" }] }');
     assertIsJson(result);
 });
 
 test('should return last valid json object', () => {
-    const result = parseJson.lastJson("text before { test: 'test', array: ['test', { test: 'test' }] } text { hey: 1 } after");
+    const result = parseJson.lastJson(
+        "text before { test: 'test', array: ['test', { test: 'test' }] } text { hey: 1 } after",
+    );
     expect(result).toBe('{ "hey": 1 }');
     assertIsJson(result);
 });
@@ -186,7 +192,9 @@ test('should cope with overly stringified objects', () => {
     };
     const scenario = JSON.stringify(JSON.stringify(JSON.stringify(JSON.stringify(object))));
     const result = parseJson.repairJson(scenario);
-    expect(result).toBe(`{ "arr\\"ay": [1, { "obj\\"ec'}t": { "\\n\\nk\\"'ey": "\\"\\"''',value" } }, [], {  }, true, null] }`);
+    expect(result).toBe(
+        `{ "arr\\"ay": [1, { "obj\\"ec'}t": { "\\n\\nk\\"'ey": "\\"\\"''',value" } }, [], {  }, true, null] }`,
+    );
     assertIsJson(result);
 });
 
@@ -243,7 +251,7 @@ test('should change noNe primitive to null', () => {
 });
 
 test('should treat space in key name as terminator if no in quotes', () => {
-    const object = ` { toString } `;
+    const object = ` { onlyKey } `;
     expect(() => {
         parseJson.repairJson(object);
     }).toThrow('Expected colon');
