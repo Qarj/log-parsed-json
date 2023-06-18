@@ -60,8 +60,7 @@ class ParseJson {
                 try {
                     this.eatObject();
                 } catch (e) {
-                    if (this.debug)
-                        console.log('error root eat object', e, this.position, this.inspected[this.position]);
+                    if (this.debug) console.log('error root eat object', e, this.position, this.inspected[this.position]);
                     this.quoted.push['{'];
                     this.position = recoveryPosition;
                 }
@@ -218,8 +217,7 @@ class ParseJson {
 
     checkQuote(quote) {
         if (quote.length === 1) return this.inspected[this.position] === quote;
-        if (quote.length === 2)
-            return this.inspected[this.position] === quote[0] && this.inspected[this.position + 1] === quote[1];
+        if (quote.length === 2) return this.inspected[this.position] === quote[0] && this.inspected[this.position + 1] === quote[1];
         if (quote.length === 3)
             return (
                 this.inspected[this.position] === quote[0] &&
@@ -300,15 +298,20 @@ class ParseJson {
 
     eatValue() {
         if (this.debug) console.log('eatValue', this.position, this.inspected[this.position]);
-        if (this.inspected[this.position] === '{') {
-            this.eatObject();
-        } else if (this.getQuote()) {
-            this.eatString();
-            this.eatConcatenatedStrings();
-        } else if (this.inspected[this.position] === '[') {
-            this.eatArray();
-        } else {
-            this.eatPrimitive();
+        switch (this.inspected[this.position]) {
+            case '{':
+                this.eatObject();
+                break;
+            case '[':
+                this.eatArray();
+                break;
+            default:
+                if (this.getQuote()) {
+                    this.eatString();
+                    this.eatConcatenatedStrings();
+                } else {
+                    this.eatPrimitive();
+                }
         }
     }
 
@@ -395,12 +398,7 @@ class ParseJson {
                 this.position++;
             }
             if ((quote === "'" || quote === '`') && this.inspected[this.position + 1] === quote) {
-                if (this.debug)
-                    console.log(
-                        'eatCharOrEscapedChar unescape single quote',
-                        this.position,
-                        this.inspected[this.position],
-                    );
+                if (this.debug) console.log('eatCharOrEscapedChar unescape single quote', this.position, this.inspected[this.position]);
             } else this.quoted.push(this.inspected[this.position]);
             this.position++;
         }
@@ -512,11 +510,14 @@ class ParseJson {
         )
             return this.eatTrue();
 
-        const primitiveRegex = /([0-9a-zA-Z-.])/;
-        while (primitiveRegex.test(this.inspected[this.position])) {
+        while (this.isPrimitiveChar(this.inspected[this.position])) {
             this.quoted.push(this.inspected[this.position]);
             this.position++;
         }
+    }
+
+    isPrimitiveChar(char) {
+        return char && /[0-9a-zA-Z-.]/.test(char);
     }
 
     eatFalse() {
