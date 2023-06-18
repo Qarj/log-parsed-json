@@ -475,32 +475,32 @@ class ParseJson {
     }
 
     eatPrimitive() {
-        const { debug, inspected } = this;
+        const { debug, inspected, position } = this;
         this.setCheckpoint();
-        if (debug) console.log('eatPrimitive', this.position, inspected[this.position]);
+        if (debug) console.log('eatPrimitive', position, inspected[position]);
 
         if (
-            inspected[this.position].toLowerCase() === 'f' &&
-            inspected[this.position + 1].toLowerCase() === 'a' &&
-            inspected[this.position + 2].toLowerCase() === 'l' &&
-            inspected[this.position + 3].toLowerCase() === 's' &&
-            inspected[this.position + 4].toLowerCase() === 'e'
+            inspected[position].toLowerCase() === 'f' &&
+            inspected[position + 1].toLowerCase() === 'a' &&
+            inspected[position + 2].toLowerCase() === 'l' &&
+            inspected[position + 3].toLowerCase() === 's' &&
+            inspected[position + 4].toLowerCase() === 'e'
         )
             return this.eatFalse();
 
         if (
-            inspected[this.position].toLowerCase() === 'n' &&
-            inspected[this.position + 1].toLowerCase() === 'o' &&
-            inspected[this.position + 2].toLowerCase() === 'n' &&
-            inspected[this.position + 3].toLowerCase() === 'e'
+            inspected[position].toLowerCase() === 'n' &&
+            inspected[position + 1].toLowerCase() === 'o' &&
+            inspected[position + 2].toLowerCase() === 'n' &&
+            inspected[position + 3].toLowerCase() === 'e'
         )
             return this.eatNone();
 
         if (
-            inspected[this.position].toLowerCase() === 't' &&
-            inspected[this.position + 1].toLowerCase() === 'r' &&
-            inspected[this.position + 2].toLowerCase() === 'u' &&
-            inspected[this.position + 3].toLowerCase() === 'e'
+            inspected[position].toLowerCase() === 't' &&
+            inspected[position + 1].toLowerCase() === 'r' &&
+            inspected[position + 2].toLowerCase() === 'u' &&
+            inspected[position + 3].toLowerCase() === 'e'
         )
             return this.eatTrue();
 
