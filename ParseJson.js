@@ -433,15 +433,16 @@ class ParseJson {
     }
 
     eatCircularOptional() {
+        const { position, inspected } = this;
         if (
-            this.inspected[this.position] === 'C' &&
-            this.inspected[this.position + 1] === 'i' &&
-            this.inspected[this.position + 2] === 'r' &&
-            this.inspected[this.position + 3] === 'c' &&
-            this.inspected[this.position + 4] === 'u' &&
-            this.inspected[this.position + 5] === 'l' &&
-            this.inspected[this.position + 6] === 'a' &&
-            this.inspected[this.position + 7] === 'r'
+            inspected[position] === 'C' &&
+            inspected[position + 1] === 'i' &&
+            inspected[position + 2] === 'r' &&
+            inspected[position + 3] === 'c' &&
+            inspected[position + 4] === 'u' &&
+            inspected[position + 5] === 'l' &&
+            inspected[position + 6] === 'a' &&
+            inspected[position + 7] === 'r'
         ) {
             this.eatCircular();
         }
