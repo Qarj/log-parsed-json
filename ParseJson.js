@@ -30,10 +30,8 @@ class ParseJson {
         try {
             const result = JSON.parse(string);
             if (typeof result === 'string') return this.deStringify(result);
-            return string;
-        } catch (e) {
-            return string;
-        }
+        } catch (e) {}
+        return string;
     }
 
     debugInfo(string) {
@@ -467,7 +465,6 @@ class ParseJson {
     }
 
     eatCloseBracket() {
-        if (this.debug) console.log('eatCloseBracket', this.position, this.inspected[this.position]);
         this.log('eatCloseBracket');
         if (this.inspected[this.position] !== ']') throw new Error('Expected close bracket');
         this.quoted.push(this.inspected[this.position]);
