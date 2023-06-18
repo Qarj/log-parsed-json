@@ -58,7 +58,8 @@ class ParseJson {
                 try {
                     this.eatObject();
                 } catch (e) {
-                    if (this.debug) console.log('error root eat object', e, this.position, this.inspected[this.position]);
+                    if (this.debug)
+                        console.log('error root eat object', e, this.position, this.inspected[this.position]);
                     this.quoted.push['{'];
                     this.position = recoveryPosition;
                 }
@@ -206,7 +207,8 @@ class ParseJson {
         if (inspected[position] === '`') return '`';
         if (inspected[position] === '“') return '”';
         if (inspected[position] === '\\' && inspected[position + 1] === '"') return '\\"';
-        if (inspected[position] === '\\' && inspected[position + 1] === '\\' && inspected[position + 2] === '"') return '\\\\"';
+        if (inspected[position] === '\\' && inspected[position + 1] === '\\' && inspected[position + 2] === '"')
+            return '\\\\"';
         return false;
     }
 
@@ -215,7 +217,11 @@ class ParseJson {
         if (quote.length === 1) return inspected[position] === quote;
         if (quote.length === 2) return inspected[position] === quote[0] && inspected[position + 1] === quote[1];
         if (quote.length === 3)
-            return inspected[position] === quote[0] && inspected[position + 1] === quote[1] && inspected[position + 2] === quote[2];
+            return (
+                inspected[position] === quote[0] &&
+                inspected[position + 1] === quote[1] &&
+                inspected[position + 2] === quote[2]
+            );
         return false;
     }
 
@@ -368,7 +374,13 @@ class ParseJson {
     eatCharOrEscapedChar(quote) {
         const { debug, inspected, quoted } = this;
         if (this.position >= inspected.length) throw new Error('Unexpected end of quoted key or string');
-        if (debug) console.log('eatCharOrEscapedChar', this.position, inspected[this.position], ' ' + inspected[this.position].charCodeAt(0));
+        if (debug)
+            console.log(
+                'eatCharOrEscapedChar',
+                this.position,
+                inspected[this.position],
+                ' ' + inspected[this.position].charCodeAt(0),
+            );
         if (inspected[this.position] === '\\' && !this.checkQuote(quote)) {
             this.log('eatCharOrEscapedChar escape');
             if (this.isDoubleEscapedDoubleQuote()) {
