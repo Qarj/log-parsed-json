@@ -130,7 +130,7 @@ class ParseJson {
         this.eatWhitespace();
         this.eatAsterisk();
         this.eatWhitespace();
-        this.eatNumber();
+        this.eatReferenceNumber();
         this.eatWhitespace();
         this.eatCloseAngleBracket();
     }
@@ -154,8 +154,8 @@ class ParseJson {
         this.position++;
     }
 
-    eatNumber() {
-        this.log('eatNumber');
+    eatReferenceNumber() {
+        this.log('eatReferenceNumber');
         const numberRegex = /[0-9]/;
         while (numberRegex.test(this.inspected[this.position])) {
             this.position++;
@@ -290,6 +290,7 @@ class ParseJson {
     }
 
     eatColon() {
+        this.log('eatColon');
         if (this.inspected[this.position] !== ':') throw new Error('Expected colon');
         this.quoted.push(this.inspected[this.position], ' ');
         this.position++;
@@ -405,12 +406,12 @@ class ParseJson {
 
         while (true) {
             this.eatWhitespace();
+            this.eatCircularOptional();
             if (this.inspected[this.position] === ']') {
                 this.removeTrailingCommaIfPresent();
                 break;
             }
             this.quotedLastCommaPosition = undefined;
-            this.eatCircularOptional();
             this.eatValue();
             this.eatWhitespace();
 
@@ -450,6 +451,7 @@ class ParseJson {
         this.log('eatCircular');
         const testRegex = /[Circular *\d]/;
         while (testRegex.test(this.inspected[this.position])) {
+            this.log('eatCircular loop');
             this.position++;
         }
         this.quoted.push('"Circular"');
@@ -472,62 +474,127 @@ class ParseJson {
         return false;
     }
 
+    // eatPrimitive() {
+    //     const { debug, inspected, position } = this;
+    //     this.setCheckpoint();
+    //     if (debug) console.log('eatPrimitive', position, inspected[position]);
+
+    //     if (
+    //         inspected[position].toLowerCase() === 'f' &&
+    //         inspected[position + 1].toLowerCase() === 'a' &&
+    //         inspected[position + 2].toLowerCase() === 'l' &&
+    //         inspected[position + 3].toLowerCase() === 's' &&
+    //         inspected[position + 4].toLowerCase() === 'e'
+    //     )
+    //         return this.eatFalse();
+
+    //     if (
+    //         inspected[position].toLowerCase() === 'n' &&
+    //         inspected[position + 1].toLowerCase() === 'o' &&
+    //         inspected[position + 2].toLowerCase() === 'n' &&
+    //         inspected[position + 3].toLowerCase() === 'e'
+    //     )
+    //         return this.eatNone();
+
+    //     if (
+    //         inspected[position].toLowerCase() === 't' &&
+    //         inspected[position + 1].toLowerCase() === 'r' &&
+    //         inspected[position + 2].toLowerCase() === 'u' &&
+    //         inspected[position + 3].toLowerCase() === 'e'
+    //     )
+    //         return this.eatTrue();
+
+    //     while (this.isPrimitiveChar(inspected[this.position])) {
+    //         this.quoted.push(inspected[this.position]);
+    //         this.position++;
+    //     }
+    // }
+
+    // isPrimitiveChar(char) {
+    //     return char && /[0-9a-zA-Z-.]/.test(char);
+    // }
+
+    // eatFalse() {
+    //     this.log('eatFalse');
+    //     this.quoted.push('false');
+    //     this.position += 5;
+    // }
+
+    // eatNone() {
+    //     this.log('eatNone');
+    //     this.quoted.push('null');
+    //     this.position += 4;
+    // }
+
+    // eatTrue() {
+    //     this.log('eatTrue');
+    //     this.quoted.push('true');
+    //     this.position += 4;
+    // }
+
     eatPrimitive() {
         const { debug, inspected, position } = this;
         this.setCheckpoint();
         if (debug) console.log('eatPrimitive', position, inspected[position]);
 
-        if (
-            inspected[position].toLowerCase() === 'f' &&
-            inspected[position + 1].toLowerCase() === 'a' &&
-            inspected[position + 2].toLowerCase() === 'l' &&
-            inspected[position + 3].toLowerCase() === 's' &&
-            inspected[position + 4].toLowerCase() === 'e'
-        )
-            return this.eatFalse();
-
-        if (
-            inspected[position].toLowerCase() === 'n' &&
-            inspected[position + 1].toLowerCase() === 'o' &&
-            inspected[position + 2].toLowerCase() === 'n' &&
-            inspected[position + 3].toLowerCase() === 'e'
-        )
-            return this.eatNone();
-
-        if (
-            inspected[position].toLowerCase() === 't' &&
-            inspected[position + 1].toLowerCase() === 'r' &&
-            inspected[position + 2].toLowerCase() === 'u' &&
-            inspected[position + 3].toLowerCase() === 'e'
-        )
-            return this.eatTrue();
-
-        while (this.isPrimitiveChar(inspected[this.position])) {
-            this.quoted.push(inspected[this.position]);
-            this.position++;
+        const lowerChar = inspected[position].toLowerCase();
+        if (lowerChar === 'f' || lowerChar === 't' || lowerChar === 'n') {
+            this.eatKeyword();
+        } else if (this.isNumberStartChar(lowerChar)) {
+            this.eatNumber();
+        } else {
+            throw new Error('Primitive not recognized, must start with f, t, n, or be numeric');
         }
     }
 
-    isPrimitiveChar(char) {
-        return char && /[0-9a-zA-Z-.]/.test(char);
+    isNumberStartChar(char) {
+        return char && /[\-0-9]/.test(char);
     }
 
-    eatFalse() {
-        this.log('eatFalse');
-        this.quoted.push('false');
-        this.position += 5;
+    eatKeyword() {
+        const { inspected, position } = this;
+        const lowerSubstring = inspected.substring(position, position + 5).toLowerCase();
+
+        if (lowerSubstring.startsWith('false')) {
+            this.log('eatFalse');
+            this.quoted.push('false');
+            this.position += 5;
+        } else if (lowerSubstring.startsWith('true')) {
+            this.log('eatTrue');
+            this.quoted.push('true');
+            this.position += 4;
+        } else if (lowerSubstring.startsWith('none') || lowerSubstring.startsWith('null')) {
+            this.log('eatNull');
+            this.quoted.push('null');
+            this.position += 4;
+        } else {
+            throw new Error('Keyword not recognized, must be true, false, null or none');
+        }
     }
 
-    eatNone() {
-        this.log('eatNone');
-        this.quoted.push('null');
-        this.position += 4;
+    eatNumber() {
+        const { inspected } = this;
+        let numberStr = '';
+
+        this.log('eatNumber');
+
+        while (this.isNumberChar(inspected[this.position])) {
+            numberStr += inspected[this.position];
+            this.position++;
+        }
+
+        let checkStr = numberStr;
+        if (checkStr.startsWith('-')) checkStr = checkStr.substring(1);
+
+        if (checkStr.length > 1 && checkStr.startsWith('0') && !checkStr.startsWith('0.')) {
+            throw new Error('Number cannot have redundant leading 0');
+        }
+
+        this.quoted.push(numberStr);
     }
 
-    eatTrue() {
-        this.log('eatTrue');
-        this.quoted.push('true');
-        this.position += 4;
+    isNumberChar(char) {
+        return char && /[\-0-9.]/.test(char);
     }
 
     log(note) {

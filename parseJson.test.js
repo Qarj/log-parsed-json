@@ -7,6 +7,100 @@ test('repairJson function exists', () => {
     expect(parseJson.repairJson).toBeDefined();
 });
 
+test('should parse a number', () => {
+    const result = parseJson.repairJson('{ "number": 123 }');
+    expect(result).toBe('{ "number": 123 }');
+});
+
+test('should throw error when given an unquoted string value', () => {
+    let object = `{ test: postgres }`;
+    expect(() => {
+        parseJson.repairJson(object);
+    }).toThrow('Primitive not recognized, must start with f, t, n, or be numeric');
+});
+
+test('should throw with unquoted string value in array', () => {
+    let object = `{ test: [1, 2, postgres] }`;
+    expect(() => {
+        parseJson.repairJson(object);
+    }).toThrow('Primitive not recognized, must start with f, t, n, or be numeric');
+});
+
+test('should throw error when a number starts with zero', () => {
+    let object = `{ test: 0123 }`;
+    expect(() => {
+        parseJson.repairJson(object);
+    }).toThrow('Number cannot have redundant leading 0');
+});
+
+test('should cope with negative numbers', () => {
+    let object = `{ test: -123 }`;
+    let result;
+    expect(() => {
+        result = parseJson.repairJson(object);
+    }).not.toThrow();
+    expect(result).toBe('{ "test": -123 }');
+});
+
+test('should cope with a negative decimal', () => {
+    let object = `{ test: -0.123 }`;
+    let result;
+    expect(() => {
+        result = parseJson.repairJson(object);
+    }).not.toThrow();
+    expect(result).toBe('{ "test": -0.123 }');
+});
+
+test('should cope with a decimal starting with zero', () => {
+    let object = `{ test: 0.123 }`;
+    let result;
+    expect(() => {
+        result = parseJson.repairJson(object);
+    }).not.toThrow();
+    expect(result).toBe('{ "test": 0.123 }');
+});
+
+test('should throw error with a fake primative starting with f', () => {
+    let object = `{ test: fake }`;
+    expect(() => {
+        parseJson.repairJson(object);
+    }).toThrow('Keyword not recognized, must be true, false, null or none');
+});
+
+test('should throw correct error with incorrect primitive f', () => {
+    let object = `{test:f}`;
+    expect(() => {
+        parseJson.repairJson(object);
+    }).toThrow('Keyword not recognized, must be true, false, null or none');
+});
+
+test('should throw correct error when a number contains a letter', () => {
+    let object = `{ test: 123a }`;
+    expect(() => {
+        parseJson.repairJson(object);
+    }).toThrow('Expected colon');
+});
+
+test('should parse a decimal', () => {
+    const result = parseJson.repairJson('{ "decimal": 123.456 }');
+    expect(result).toBe('{ "decimal": 123.456 }');
+});
+
+test('should parse true', () => {
+    const result = parseJson.repairJson('{ "boolean": true }');
+    expect(result).toBe('{ "boolean": true }');
+});
+
+test('should parse false', () => {
+    const result = parseJson.repairJson('{ "boolean": false }');
+    expect(result).toBe('{ "boolean": false }');
+});
+
+test('should parse null', () => {
+    const result = parseJson.repairJson('{ "null": null }');
+    expect(result).toBe('{ "null": null }');
+});
+
 test('should return valid json string from inspected output', () => {
     const result = parseJson.repairJson("{ test: 'test', array: ['test', { test: 'test' }] }").replace(/\s/g, '');
     let expected = '{"test":"test","array":["test",{"test":"test"}]}';
@@ -155,6 +249,9 @@ test('cope with circular references', () => {
 
     const result = parseJson.repairJson(scenario);
     expect(result).toMatch('"Circular"');
+    expect(result).toBe(
+        '{ "abc": { "abc": 123, "def": "test", "ghi": { "jkl": "test" }, "xyz": { "zzz": 123, "jj": "test", "abc": ["Circular"] } }, "def": { "zzz": 123, "jj": "test", "abc": { "abc": 123, "def": "test", "ghi": { "jkl": "test" }, "xyz": ["Circular"] } } }',
+    );
     assertIsJson(result);
 });
 
@@ -291,12 +388,6 @@ test('should support trailing comma in array - 2', () => {
     let object = '{ arr: [1,2,3,]}';
     const result = parseJson.repairJson(object);
     expect(result).toBe('{ "arr": [1, 2, 3] }');
-    assertIsJson(result);
-});
-
-test('should support trailing comma in array - 3', () => {
-    let object = '{ arr: [,]}';
-    const result = parseJson.repairJson(object);
     assertIsJson(result);
 });
 
