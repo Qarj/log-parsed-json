@@ -474,64 +474,6 @@ class ParseJson {
         return false;
     }
 
-    // eatPrimitive() {
-    //     const { debug, inspected, position } = this;
-    //     this.setCheckpoint();
-    //     if (debug) console.log('eatPrimitive', position, inspected[position]);
-
-    //     if (
-    //         inspected[position].toLowerCase() === 'f' &&
-    //         inspected[position + 1].toLowerCase() === 'a' &&
-    //         inspected[position + 2].toLowerCase() === 'l' &&
-    //         inspected[position + 3].toLowerCase() === 's' &&
-    //         inspected[position + 4].toLowerCase() === 'e'
-    //     )
-    //         return this.eatFalse();
-
-    //     if (
-    //         inspected[position].toLowerCase() === 'n' &&
-    //         inspected[position + 1].toLowerCase() === 'o' &&
-    //         inspected[position + 2].toLowerCase() === 'n' &&
-    //         inspected[position + 3].toLowerCase() === 'e'
-    //     )
-    //         return this.eatNone();
-
-    //     if (
-    //         inspected[position].toLowerCase() === 't' &&
-    //         inspected[position + 1].toLowerCase() === 'r' &&
-    //         inspected[position + 2].toLowerCase() === 'u' &&
-    //         inspected[position + 3].toLowerCase() === 'e'
-    //     )
-    //         return this.eatTrue();
-
-    //     while (this.isPrimitiveChar(inspected[this.position])) {
-    //         this.quoted.push(inspected[this.position]);
-    //         this.position++;
-    //     }
-    // }
-
-    // isPrimitiveChar(char) {
-    //     return char && /[0-9a-zA-Z-.]/.test(char);
-    // }
-
-    // eatFalse() {
-    //     this.log('eatFalse');
-    //     this.quoted.push('false');
-    //     this.position += 5;
-    // }
-
-    // eatNone() {
-    //     this.log('eatNone');
-    //     this.quoted.push('null');
-    //     this.position += 4;
-    // }
-
-    // eatTrue() {
-    //     this.log('eatTrue');
-    //     this.quoted.push('true');
-    //     this.position += 4;
-    // }
-
     eatPrimitive() {
         const { debug, inspected, position } = this;
         this.setCheckpoint();
