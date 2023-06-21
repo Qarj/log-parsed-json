@@ -12,6 +12,42 @@ test('should parse a number', () => {
     expect(result).toBe('{ "number": 123 }');
 });
 
+test('should parse scientific notation with plus', () => {
+    const result = parseJson.repairJson('{ "number": 1.23e+20 }');
+    expect(result).toBe('{ "number": 1.23e+20 }');
+});
+
+test('should parse scientific notation with minus', () => {
+    const result = parseJson.repairJson('{ "number": -1.23e-20 }');
+    expect(result).toBe('{ "number": -1.23e-20 }');
+});
+
+test('should parse scientific notation without plus', () => {
+    const result = parseJson.repairJson('{ "number": 1.2e9 }');
+    expect(result).toBe('{ "number": 1.2e9 }');
+});
+
+test('should throw on invalid number', () => {
+    const scenario = '{ "number": 1. }';
+    expect(() => {
+        console.log(parseJson.repairJson(scenario));
+    }).toThrow('Number cannot have trailing decimal point');
+});
+
+test('should throw when number has a leading plus', () => {
+    const scenario = '{ "number": +1 }';
+    expect(() => {
+        parseJson.repairJson(scenario);
+    }).toThrow('Primitive not recognized, must start with f, t, n, or be numeric');
+});
+
+test('should throw on invalid scientific notation', () => {
+    const scenario = '{ "number": 1.e9 }';
+    expect(() => {
+        parseJson.repairJson(scenario);
+    }).toThrow('Number cannot have decimal point followed by exponent');
+});
+
 test('should throw error when given an unquoted string value', () => {
     let object = `{ test: postgres }`;
     expect(() => {
@@ -525,6 +561,22 @@ test('should run quickly and not have catatrophic garbage collection', () => {
 
     const endTime = Date.now();
     expect(endTime - startTime).toBeLessThan(5000);
+});
+
+// Additional repair tests
+
+test('should repair extra commas in both array and after value', () => {
+    let object = `{"artist":["keith",8,2,],}`;
+    const result = parseJson.repairJson(object);
+    expect(result).toBe('{ "artist": ["keith", 8, 2] }');
+    assertIsJson(result);
+});
+
+test('should add missing commas in various examples', () => {
+    let object = `{"artist":[5 22 32.1 44 {"two":7 eight:9}],}`;
+    const result = parseJson.repairJson(object);
+    expect(result).toBe('{ "artist": [5, 22, 32.1, 44, { "two": 7, "eight": 9 }] }');
+    assertIsJson(result);
 });
 
 function assertIsJson(json) {

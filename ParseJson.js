@@ -532,11 +532,17 @@ class ParseJson {
             throw new Error('Number cannot have redundant leading 0');
         }
 
+        if (checkStr.endsWith('.')) throw new Error('Number cannot have trailing decimal point');
+
+        if (checkStr.includes('.e') || checkStr.includes('.E')) {
+            throw new Error('Number cannot have decimal point followed by exponent');
+        }
+
         this.quoted.push(numberStr);
     }
 
     isNumberChar(char) {
-        return char && /[\-0-9.]/.test(char);
+        return char && /[\-\+e0-9.]/.test(char);
     }
 
     log(note) {
