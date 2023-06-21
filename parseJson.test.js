@@ -27,6 +27,12 @@ test('should parse scientific notation without plus', () => {
     expect(result).toBe('{ "number": 1.2e9 }');
 });
 
+test('should parse scientific notation with capital E', () => {
+    const result = parseJson.repairJson('{ "number": 1.2E9 }');
+    console.log(result);
+    expect(result).toBe('{ "number": 1.2e9 }');
+});
+
 test('should throw on invalid number', () => {
     const scenario = '{ "number": 1. }';
     expect(() => {
@@ -41,11 +47,25 @@ test('should throw when number has a leading plus', () => {
     }).toThrow('Primitive not recognized, must start with f, t, n, or be numeric');
 });
 
-test('should throw on invalid scientific notation', () => {
+test('should throw on invalid scientific notation - case 1', () => {
     const scenario = '{ "number": 1.e9 }';
     expect(() => {
         parseJson.repairJson(scenario);
     }).toThrow('Number cannot have decimal point followed by exponent');
+});
+
+test('should throw on invalid scientific notation - case 2', () => {
+    const scenario = '{ "number": 1.2e+ }';
+    expect(() => {
+        parseJson.repairJson(scenario);
+    }).toThrow('Number cannot have trailing sign');
+});
+
+test('should throw on invalid scientific notation - case 3', () => {
+    const scenario = '{ "number": 1.2e }';
+    expect(() => {
+        parseJson.repairJson(scenario);
+    }).toThrow('Number cannot have trailing exponent');
 });
 
 test('should throw error when given an unquoted string value', () => {

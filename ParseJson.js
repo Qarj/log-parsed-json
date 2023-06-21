@@ -525,6 +525,8 @@ class ParseJson {
             this.position++;
         }
 
+        numberStr = numberStr.toLowerCase();
+
         let checkStr = numberStr;
         if (checkStr.startsWith('-')) checkStr = checkStr.substring(1);
 
@@ -538,11 +540,19 @@ class ParseJson {
             throw new Error('Number cannot have decimal point followed by exponent');
         }
 
+        if (checkStr.endsWith('e') || checkStr.endsWith('E')) {
+            throw new Error('Number cannot have trailing exponent');
+        }
+
+        if (checkStr.endsWith('-') || checkStr.endsWith('+')) {
+            throw new Error('Number cannot have trailing sign');
+        }
+
         this.quoted.push(numberStr);
     }
 
     isNumberChar(char) {
-        return char && /[\-\+e0-9.]/.test(char);
+        return char && /[\-\+eE0-9.]/.test(char);
     }
 
     log(note) {
