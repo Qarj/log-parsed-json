@@ -2,6 +2,16 @@ const util = require('util');
 const ParseJson = require('./ParseJson.js');
 
 function log(object) {
+    process.env.USE_INSPECT = '1';
+    _log(object);
+}
+
+function logAsJson(object) {
+    process.env.USE_INSPECT = '';
+    _log(object);
+}
+
+function _log(object) {
     if (typeof object === 'number') return console.log(object);
     if (typeof object === 'boolean') return console.log(object);
     if (typeof object === 'object') {
@@ -45,10 +55,21 @@ function isJson(text) {
 }
 
 function logPretty(obj) {
+    if (!process.env.USE_INSPECT) return logPrettyJson(obj);
     let jsonString = obj;
     try {
         if (typeof obj === 'string') jsonString = JSON.parse(obj);
         process.stdout.write(util.inspect(jsonString, { showHidden: false, depth: null, colors: true }));
+    } catch (e) {
+        process.stdout.write(obj);
+    }
+}
+
+function logPrettyJson(obj) {
+    let jsonString = obj;
+    try {
+        if (typeof obj === 'string') jsonString = JSON.parse(obj);
+        process.stdout.write(JSON.stringify(jsonString, null, 4));
     } catch (e) {
         process.stdout.write(obj);
     }
@@ -105,6 +126,7 @@ function jsonMatching(input, regex) {
 
 module.exports = {
     log,
+    logAsJson,
     repairJson,
     toArrayOfPlainStringsOrJson,
     canParseJson,
