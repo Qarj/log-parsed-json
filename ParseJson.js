@@ -225,10 +225,21 @@ class ParseJson {
         return false;
     }
 
-    eatQuoteAdditional(quote) {
+    eatLongQuote(quote) {
         const eatExtra = quote.length - 1;
         for (let i = 0; i < eatExtra; i++) {
-            if (this.debug) console.log('eatQuoteAdditional', this.position, this.inspected[this.position]);
+            if (this.debug) console.log('eatLongQuote', this.position, this.inspected[this.position]);
+            this.position++;
+        }
+    }
+
+    eatExtraStartingKeyDoubleQuote(quote) {
+        if (quote !== '"') return;
+        const { inspected, position } = this;
+        if (inspected[position] === '"') {
+            const virtualPosition = this.eatVirtualWhiteSpace(this.position + 1);
+            if (this.inspected[virtualPosition] == ':') return;
+            this.log('eatExtraStartingKeyDoubleQuote');
             this.position++;
         }
     }
@@ -240,14 +251,15 @@ class ParseJson {
         const quote = this.getQuote();
         this.quoted.push('"');
         this.position++;
-        this.eatQuoteAdditional(quote);
+        this.eatLongQuote(quote);
+        this.eatExtraStartingKeyDoubleQuote(quote);
         while (!this.checkQuote(quote)) {
             this.eatCharOrEscapedChar(quote);
         }
         this.log('eatQuotedKey end');
         this.quoted.push('"');
         this.position++;
-        this.eatQuoteAdditional(quote);
+        this.eatLongQuote(quote);
     }
 
     eatUnquotedKey() {
@@ -340,14 +352,14 @@ class ParseJson {
         let quote = this.getQuote();
         if (this.debug) console.log('quote', quote);
         this.position++;
-        this.eatQuoteAdditional(quote);
+        this.eatLongQuote(quote);
         while (!this.isEndQuoteMakingAllowanceForUnescapedSingleQuote(quote)) {
             this.eatCharOrEscapedChar(quote);
         }
         this.log('eatString end');
         this.quoted.push('"');
         this.position++;
-        this.eatQuoteAdditional(quote);
+        this.eatLongQuote(quote);
     }
 
     isEndQuoteMakingAllowanceForUnescapedSingleQuote(quote) {

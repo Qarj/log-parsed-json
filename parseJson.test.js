@@ -29,14 +29,13 @@ test('should parse scientific notation without plus', () => {
 
 test('should parse scientific notation with capital E', () => {
     const result = parseJson.repairJson('{ "number": 1.2E9 }');
-    console.log(result);
     expect(result).toBe('{ "number": 1.2e9 }');
 });
 
 test('should throw on invalid number', () => {
     const scenario = '{ "number": 1. }';
     expect(() => {
-        console.log(parseJson.repairJson(scenario));
+        parseJson.repairJson(scenario);
     }).toThrow('Number cannot have trailing decimal point');
 });
 
