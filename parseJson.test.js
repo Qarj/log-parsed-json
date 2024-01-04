@@ -610,14 +610,14 @@ test('should not remove quoted double quote', () => {
     assertIsJson(result);
 });
 
-test('should not remove quoted double quote followed by colon space', () => {
+test('should not remove quoted double quote followed by space colon', () => {
     let object = `{"story": {"\\": 5": "10-10"}}`;
     const result = parseJson.repairJson(object);
     expect(result).toBe('{ "story": { "\\": 5": "10-10" } }');
     assertIsJson(result);
 });
 
-test('should not get confused by colon space', () => {
+test('should not get confused by space colon', () => {
     let object = `{"story": {": 5": "10-10"}}`;
     const result = parseJson.repairJson(object);
     expect(result).toBe('{ "story": { ": 5": "10-10" } }');
@@ -628,6 +628,34 @@ test('should not get confused by colon', () => {
     let object = `{"story": {":5": "10-10"}}`;
     const result = parseJson.repairJson(object);
     expect(result).toBe('{ "story": { ":5": "10-10" } }');
+    assertIsJson(result);
+});
+
+test('single quotes at start of double quotes key followed by space colon', () => {
+    let object = `{"story": {"':5": "10-10"}}`;
+    const result = parseJson.repairJson(object);
+    expect(result).toBe(`{ "story": { "':5": "10-10" } }`);
+    assertIsJson(result);
+});
+
+test('backtick at start of double quotes key followed by space colon', () => {
+    let object = '{"story": {"`:5": "10-10"}}';
+    const result = parseJson.repairJson(object);
+    expect(result).toBe('{ "story": { "`:5": "10-10" } }');
+    assertIsJson(result);
+});
+
+test('single quotes at start of double quotes key not followed by space colon', () => {
+    let object = `{"story": {"'-:5": "10-10"}}`;
+    const result = parseJson.repairJson(object);
+    expect(result).toBe(`{ "story": { "'-:5": "10-10" } }`);
+    assertIsJson(result);
+});
+
+test('backtick at start of double quotes key not followed by space colon', () => {
+    let object = '{"story": {"`-:5": "10-10"}}';
+    const result = parseJson.repairJson(object);
+    expect(result).toBe('{ "story": { "`-:5": "10-10" } }');
     assertIsJson(result);
 });
 

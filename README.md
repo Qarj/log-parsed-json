@@ -24,6 +24,7 @@ Intended to help with debugging, particulary in situations where you have for ex
 -   Add quotes to keys
 -   Convert single quotes, backticks, curly quotes, escaped double quotes and double escaped double quotes to double quotes
 -   Merge strings concatenated with a `+` to a single string
+-   Remove additional double quote at start of key that gpt-3.5-turbo sometimes adds
 
 ## Installation
 
