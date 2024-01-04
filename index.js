@@ -1,5 +1,6 @@
 const util = require('util');
 const ParseJson = require('./ParseJson.js');
+const { type } = require('os');
 
 function log(object) {
     process.env.USE_INSPECT = '1';
@@ -36,9 +37,23 @@ function logJsonsInJson(item) {
 
     for (const key in object) {
         if (object[key] && typeof object[key] === 'object') logJsonsInJson(JSON.stringify(object[key]));
-        else if (canParseJson(object[key])) {
-            console.log(`\nFOUND JSON found in key ${key} --->`);
-            logJsons(object[key]);
+        else if (object[key] && typeof object[key] === 'string') {
+            logInnerJsons(object[key], key);
+        }
+    }
+}
+
+function logInnerJsons(text, key) {
+    let array = toArrayOfPlainStringsOrJson(text);
+    let jsonFound = false;
+    for (const item of array) {
+        if (isJson(item)) jsonFound = true;
+    }
+    if (jsonFound) {
+        console.log(`\nFOUND JSON in key ${key} --->`);
+        for (const item of array) {
+            logPretty(item);
+            if (isJson(item)) logJsonsInJson(item);
         }
     }
 }
