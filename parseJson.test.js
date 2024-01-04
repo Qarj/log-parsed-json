@@ -583,8 +583,6 @@ test('should run quickly and not have catatrophic garbage collection', () => {
     expect(endTime - startTime).toBeLessThan(5000);
 });
 
-// Additional repair tests
-
 test('should repair extra commas in both array and after value', () => {
     let object = `{"artist":["keith",8,2,],}`;
     const result = parseJson.repairJson(object);
@@ -596,6 +594,41 @@ test('should add missing commas in various examples', () => {
     let object = `{"artist":[5 22 32.1 44 {"two":7 eight:9}],}`;
     const result = parseJson.repairJson(object);
     expect(result).toBe('{ "artist": [5, 22, 32.1, 44, { "two": 7, "eight": 9 }] }');
+    assertIsJson(result);
+});
+
+test('should remove extra starting double quote added by gpt-3.5-turbo', () => {
+    let object = `{"story": {""5": "10-10"}}`;
+    const result = parseJson.repairJson(object);
+    expect(result).toBe('{ "story": { "5": "10-10" } }');
+    assertIsJson(result);
+});
+
+test('should not remove quoted double quote', () => {
+    let object = `{"story": {"\\"5": "10-10"}}`;
+    const result = parseJson.repairJson(object);
+    expect(result).toBe('{ "story": { "\\"5": "10-10" } }');
+    assertIsJson(result);
+});
+
+test('should not remove quoted double quote followed by colon space', () => {
+    let object = `{"story": {"\\": 5": "10-10"}}`;
+    const result = parseJson.repairJson(object);
+    expect(result).toBe('{ "story": { "\\": 5": "10-10" } }');
+    assertIsJson(result);
+});
+
+test('should not get confused by colon space', () => {
+    let object = `{"story": {": 5": "10-10"}}`;
+    const result = parseJson.repairJson(object);
+    expect(result).toBe('{ "story": { ": 5": "10-10" } }');
+    assertIsJson(result);
+});
+
+test('should not get confused by colon', () => {
+    let object = `{"story": {":5": "10-10"}}`;
+    const result = parseJson.repairJson(object);
+    expect(result).toBe('{ "story": { ":5": "10-10" } }');
     assertIsJson(result);
 });
 
