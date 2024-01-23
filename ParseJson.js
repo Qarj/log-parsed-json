@@ -406,7 +406,12 @@ class ParseJson {
             this.position++;
         }
         if ((quote === "'" || quote === '`') && inspected[this.position] === '"') quoted.push('\\');
-        quoted.push(inspected[this.position]);
+        if (inspected[this.position] === '\n') {
+            this.log('eatCharOrEscapedChar unescaped newline');
+            quoted.push('\\n');
+        } else {
+            quoted.push(inspected[this.position]);
+        }
         this.position++;
     }
 

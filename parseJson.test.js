@@ -659,6 +659,35 @@ test('backtick at start of double quotes key not followed by space colon', () =>
     assertIsJson(result);
 });
 
+test('should repair JSON with unescaped newline in string value - backtick outer', () => {
+    let object = `{"res": "Sorry.
+Bye."}`;
+    const result = parseJson.repairJson(object);
+    expect(result).toBe(`{ "res": "Sorry.\\nBye." }`);
+    assertIsJson(result);
+});
+
+test('should repair JSON with unescaped newline in string value - single quote outer', () => {
+    let object = '{"res": "Sorry.\nBye."}';
+    const result = parseJson.repairJson(object);
+    expect(result).toBe(`{ "res": "Sorry.\\nBye." }`);
+    assertIsJson(result);
+});
+
+test('should repair JSON with unescaped newline in string value - single quote inner', () => {
+    let object = `{'res': 'Sorry.\nBye.'}`;
+    const result = parseJson.repairJson(object);
+    expect(result).toBe(`{ "res": "Sorry.\\nBye." }`);
+    assertIsJson(result);
+});
+
+test('should repair JSON with unescaped newline in string value - backtick inner', () => {
+    let object = '{`res`: `Sorry.\nBye.`}';
+    const result = parseJson.repairJson(object);
+    expect(result).toBe(`{ "res": "Sorry.\\nBye." }`);
+    assertIsJson(result);
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {
