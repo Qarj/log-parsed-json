@@ -26,6 +26,7 @@ Intended to help with debugging, particulary in situations where you have for ex
 -   Merge strings concatenated with a `+` to a single string
 -   Remove additional double quote at start of key that gpt-3.5-turbo sometimes adds
 -   Escape unescaped newline `\n` in string value
+-   Deal with many escaping la-la land cases e.g. `{\\"res\\": \\"{ \\\\\\"a\\\\\\": \\\\\\"b\\\\\\" }\\"}`
 
 ## Installation
 

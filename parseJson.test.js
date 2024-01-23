@@ -688,6 +688,13 @@ test('should repair JSON with unescaped newline in string value - backtick inner
     assertIsJson(result);
 });
 
+test('should repair basdly mis-escaped JSON', () => {
+    let object = '{\\"res\\": \\"{ \\\\\\"a\\\\\\": \\\\\\"b\\\\\\" }\\"}';
+    const result = parseJson.repairJson(object);
+    expect(result).toBe(`{ "res": "{ \\"a\\": \\"b\\" }" }`);
+    assertIsJson(result);
+});
+
 function assertIsJson(json) {
     let isValidJson = false;
     try {
