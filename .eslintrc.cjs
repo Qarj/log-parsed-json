@@ -30,7 +30,7 @@ module.exports = {
         'indent': 'off',
         'linebreak-style': ['error', 'unix'],
         // 'quotes': ['error', 'single', { allowTemplateLiterals: true }],
-        'semi': ['error', 'always'],
+        'semi': ['off'],
         'no-unused-vars': 'off',
         'no-constant-condition': 'off',
         'no-empty': 'off',

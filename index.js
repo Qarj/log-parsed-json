@@ -73,6 +73,7 @@ export function logPretty(obj) {
     if (!process.env.USE_INSPECT) return logPrettyJson(obj);
     let jsonString = obj;
     try {
+        // console.log('using inspect');
         if (typeof obj === 'string') jsonString = JSON.parse(obj);
         process.stdout.write(util.inspect(jsonString, { showHidden: false, depth: null, colors: true }));
     } catch (e) {

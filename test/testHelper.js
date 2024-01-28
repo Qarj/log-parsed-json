@@ -1,14 +1,29 @@
-console.log('console log from testHelper.js');
-// import { log } from '../index.js';
-// import fs from 'fs';
-// import path from 'path';
-// const { log } = require('../index.js');
-// const fs = require('fs');
-// const path = require('path');
-// const args = JSON.parse(fs.readFileSync(path.join(__dirname, './testHelperArguments.json')));
+// console.log('---TEST HELPER---');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { log } from '../index.js';
 
-// let objectToLog = {};
+// console.log('---TEST HELPER---');
 
-// if (args.value) objectToLog = args.value;
+// Convert the URL to a file path
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// log(objectToLog);
+let args;
+try {
+    args = JSON.parse(fs.readFileSync(path.join(__dirname, './testHelperArguments.json')));
+} catch (e) {
+    // console.log('error reading file', e);
+    args = {};
+}
+
+// console.log('args', args);
+
+let objectToLog = {};
+
+if (args.value) objectToLog = args.value;
+
+console.log('objectToLog', objectToLog);
+
+log(objectToLog);
