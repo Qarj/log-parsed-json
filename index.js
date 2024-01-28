@@ -1,13 +1,12 @@
-const util = require('util');
-const ParseJson = require('./ParseJson.js');
-const { type } = require('os');
+import util from 'util';
+import ParseJson from './ParseJson.js';
 
-function log(object) {
+export function log(object) {
     process.env.USE_INSPECT = '1';
     _log(object);
 }
 
-function logAsJson(object) {
+export function logAsJson(object) {
     process.env.USE_INSPECT = '';
     _log(object);
 }
@@ -23,7 +22,7 @@ function _log(object) {
     logJsons(object);
 }
 
-function logJsons(text) {
+export function logJsons(text) {
     let array = toArrayOfPlainStringsOrJson(text);
     for (const item of array) {
         logPretty(item);
@@ -32,7 +31,7 @@ function logJsons(text) {
     console.log();
 }
 
-function logJsonsInJson(item) {
+export function logJsonsInJson(item) {
     const object = JSON.parse(item);
 
     for (const key in object) {
@@ -43,7 +42,7 @@ function logJsonsInJson(item) {
     }
 }
 
-function logInnerJsons(text, key) {
+export function logInnerJsons(text, key) {
     let array = toArrayOfPlainStringsOrJson(text);
     let jsonFound = false;
     for (const item of array) {
@@ -58,7 +57,7 @@ function logInnerJsons(text, key) {
     }
 }
 
-function isJson(text) {
+export function isJson(text) {
     try {
         const result = JSON.parse(text);
         if (!result) return false;
@@ -67,9 +66,10 @@ function isJson(text) {
     } catch (e) {
         return false;
     }
+    // const result = repairJson('{ "number": 1.23e+20 }');
 }
 
-function logPretty(obj) {
+export function logPretty(obj) {
     if (!process.env.USE_INSPECT) return logPrettyJson(obj);
     let jsonString = obj;
     try {
@@ -80,7 +80,7 @@ function logPretty(obj) {
     }
 }
 
-function logPrettyJson(obj) {
+export function logPrettyJson(obj) {
     let jsonString = obj;
     try {
         if (typeof obj === 'string') jsonString = JSON.parse(obj);
@@ -90,17 +90,17 @@ function logPrettyJson(obj) {
     }
 }
 
-function repairJson(input) {
+export function repairJson(input) {
     const parseJson = new ParseJson(input);
     return parseJson.repairJson();
 }
 
-function toArrayOfPlainStringsOrJson(input) {
+export function toArrayOfPlainStringsOrJson(input) {
     const parseJson = new ParseJson(input);
     return parseJson.toArrayOfPlainStringsOrJson();
 }
 
-function canParseJson(input) {
+export function canParseJson(input) {
     const parseJson = new ParseJson(input);
     try {
         parseJson.repairJson();
@@ -110,43 +110,31 @@ function canParseJson(input) {
     }
 }
 
-function firstJson(input) {
+export function firstJson(input) {
     const parseJson = new ParseJson(input);
     const result = parseJson.toArrayOfPlainStringsOrJson();
-    for (item of result) if (canParseJson(item)) return item;
+    for (const item of result) if (canParseJson(item)) return item;
     return '';
 }
 
-function lastJson(input) {
+export function lastJson(input) {
     const parseJson = new ParseJson(input);
     const result = parseJson.toArrayOfPlainStringsOrJson();
     for (let i = result.length - 1; i >= 0; i--) if (canParseJson(result[i])) return result[i];
     return '';
 }
 
-function largestJson(input) {
+export function largestJson(input) {
     const parseJson = new ParseJson(input);
     const result = parseJson.toArrayOfPlainStringsOrJson();
     let largest = '';
-    for (item of result) if (canParseJson(item) && item.length > largest.length) largest = item;
+    for (const item of result) if (canParseJson(item) && item.length > largest.length) largest = item;
     return largest;
 }
 
-function jsonMatching(input, regex) {
+export function jsonMatching(input, regex) {
     const parseJson = new ParseJson(input);
     const result = parseJson.toArrayOfPlainStringsOrJson();
-    for (item of result) if (canParseJson(item) && regex.test(item)) return item;
+    for (const item of result) if (canParseJson(item) && regex.test(item)) return item;
     return '';
 }
-
-module.exports = {
-    log,
-    logAsJson,
-    repairJson,
-    toArrayOfPlainStringsOrJson,
-    canParseJson,
-    firstJson,
-    lastJson,
-    largestJson,
-    jsonMatching,
-};

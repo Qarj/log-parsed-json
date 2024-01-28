@@ -1,5 +1,6 @@
-const parse = require('./index.js');
-scenario = `{
+import parse from './index.js';
+
+const scenario = `{
   abc: <ref *1> {
     abc: 123,
     def: 'test',

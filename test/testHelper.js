@@ -1,11 +1,14 @@
-const { log } = require('../index.js');
-const fs = require('fs');
-const path = require('path');
+console.log('console log from testHelper.js');
+// import { log } from '../index.js';
+// import fs from 'fs';
+// import path from 'path';
+// const { log } = require('../index.js');
+// const fs = require('fs');
+// const path = require('path');
+// const args = JSON.parse(fs.readFileSync(path.join(__dirname, './testHelperArguments.json')));
 
-const args = JSON.parse(fs.readFileSync(path.join(__dirname, './testHelperArguments.json')));
+// let objectToLog = {};
 
-let objectToLog = {};
+// if (args.value) objectToLog = args.value;
 
-if (args.value) objectToLog = args.value;
-
-log(objectToLog);
+// log(objectToLog);

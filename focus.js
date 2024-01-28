@@ -1,4 +1,5 @@
-const { log } = require('./index.js');
+/* eslint-disable no-useless-escape */
+import { log } from './index.js';
 
 // log(` { 'k1': '{ j: 45 }', 'k2': 123 }  `);
 

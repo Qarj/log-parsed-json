@@ -1,4 +1,4 @@
-class ParseJson {
+export default class ParseJson {
     constructor(input) {
         this.debugInfo(input);
         this.inspected = this.deStringify(input);
@@ -548,6 +548,8 @@ class ParseJson {
     }
 
     eatNumber() {
+        module.exports = ParseJson;
+
         const { inspected } = this;
         let numberStr = '';
 
@@ -592,5 +594,3 @@ class ParseJson {
         if (this.debug) console.log(note, this.position, this.inspected[this.position]);
     }
 }
-
-module.exports = ParseJson;

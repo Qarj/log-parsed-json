@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { log } = require('./index.js');
+import { log } from './index.js';
 
 let data = '';
 
