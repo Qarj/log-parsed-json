@@ -113,7 +113,7 @@ function canParseJson(input) {
 function firstJson(input) {
     const parseJson = new ParseJson(input);
     const result = parseJson.toArrayOfPlainStringsOrJson();
-    for (item of result) if (canParseJson(item)) return item;
+    for (const item of result) if (canParseJson(item)) return item;
     return '';
 }
 
@@ -128,14 +128,14 @@ function largestJson(input) {
     const parseJson = new ParseJson(input);
     const result = parseJson.toArrayOfPlainStringsOrJson();
     let largest = '';
-    for (item of result) if (canParseJson(item) && item.length > largest.length) largest = item;
+    for (const item of result) if (canParseJson(item) && item.length > largest.length) largest = item;
     return largest;
 }
 
 function jsonMatching(input, regex) {
     const parseJson = new ParseJson(input);
     const result = parseJson.toArrayOfPlainStringsOrJson();
-    for (item of result) if (canParseJson(item) && regex.test(item)) return item;
+    for (const item of result) if (canParseJson(item) && regex.test(item)) return item;
     return '';
 }
 

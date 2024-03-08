@@ -1,5 +1,5 @@
 const parse = require('./index.js');
-scenario = `{
+const scenario = `{
   abc: <ref *1> {
     abc: 123,
     def: 'test',

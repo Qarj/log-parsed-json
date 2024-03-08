@@ -1,3 +1,5 @@
+/* eslint-disable no-constant-condition */
+/* eslint-disable no-empty */
 class ParseJson {
     constructor(input) {
         this.debugInfo(input);
@@ -523,7 +525,7 @@ class ParseJson {
     }
 
     isNumberStartChar(char) {
-        return char && /[\-0-9]/.test(char);
+        return char && /[-0-9]/.test(char);
     }
 
     eatKeyword() {
@@ -585,7 +587,7 @@ class ParseJson {
     }
 
     isNumberChar(char) {
-        return char && /[\-\+eE0-9.]/.test(char);
+        return char && /[-+eE0-9.]/.test(char);
     }
 
     log(note) {

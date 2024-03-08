@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-escape */
+/* eslint-disable no-empty */
 const parseJson = require('./index.js');
 const fs = require('fs');
 
