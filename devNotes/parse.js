@@ -1,4 +1,4 @@
-const parse = require('./index.js');
+const parse = require('../index.js');
 const scenario = `{
   abc: <ref *1> {
     abc: 123,

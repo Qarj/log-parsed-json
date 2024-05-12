@@ -1,4 +1,4 @@
-const { firstJson } = require('./index.js');
+const { firstJson } = require('../index.js');
 
 const completion = `Thought: "I need to search for developer jobs in London"
 Action: SearchTool
