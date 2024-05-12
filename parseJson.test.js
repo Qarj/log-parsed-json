@@ -257,7 +257,7 @@ test('when changing a single quoted string to double quotes, needs to quote the 
 });
 
 test('when changing a single quoted string to double quotes, needs to unquote the single quotes', () => {
-    const scenario = fs.readFileSync('./singlequoted.txt', 'utf8'); // defeat prettier
+    const scenario = fs.readFileSync('./test/singlequoted.txt', 'utf8'); // defeat prettier
     const result = parseJson.repairJson(scenario);
     expect(result).toBe(`{ "abc '": "test'", "key": 123 }`);
     assertIsJson(result);
@@ -271,7 +271,7 @@ test('when changing a backtick quoted string to double quotes, needs to fix quot
 });
 
 test('when changing a backticked quoted string to double quotes, needs to unquote the single quotes but not double', () => {
-    const scenario = fs.readFileSync('./backticked.txt', 'utf8'); // defeat prettier
+    const scenario = fs.readFileSync('./test/backticked.txt', 'utf8'); // defeat prettier
     const result = parseJson.repairJson(scenario);
     expect(result).toBe('{ "abc \'\\"`": "test`\'\\"", "key": 123 }');
     assertIsJson(result);
