@@ -5,6 +5,7 @@ testHelperArguments.json
 testHelperCalls.json
 temp/
 dump.js
+temp.js
 
 # Logs
 logs
