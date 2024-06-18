@@ -2,8 +2,8 @@
 /* eslint-disable no-empty */
 class ParseJson {
     constructor(input, options) {
-        this.attemptRepairOfBadlyBrokenQuotes = false;
-        if (options.attemptRepairOfBadlyBrokenQuotes) this.attemptRepairOfBadlyBrokenQuotes = true;
+        this.attemptRepairOfMismatchedQuotes = false;
+        if (options.attemptRepairOfMismatchedQuotes) this.attemptRepairOfMismatchedQuotes = true;
         this.debugInfo(input);
         this.inspected = this.deStringify(input);
         this.resetPointer();
@@ -24,7 +24,7 @@ class ParseJson {
         this.checkpointQuoted = this.quoted;
     }
 
-    repairJson(options = {}) {
+    repairJson() {
         this.resetPointer();
         this.eatObject();
         return this.quoted.join('');
@@ -226,7 +226,7 @@ class ParseJson {
                 inspected[position + 1] === quote[1] &&
                 inspected[position + 2] === quote[2]
             );
-        if (this.attemptRepairOfBadlyBrokenQuotes) {
+        if (this.attemptRepairOfMismatchedQuotes) {
             return (
                 inspected[position] === "'" ||
                 inspected[position] === '"' ||

@@ -492,28 +492,28 @@ test('should cope with pretty formatted sloping double quotes as output by Word 
 test('should cope with a pair of left curly quotes in extreme mode', () => {
     let object = `{ “name“: “Alice“, “age“: 26, }`;
 
-    const result = parseJson.repairJson(object, { attemptRepairOfBadlyBrokenQuotes: true });
+    const result = parseJson.repairJson(object, { attemptRepairOfMismatchedQuotes: true });
     assertIsJson(result);
 });
 
 test('should cope with a pair of right curly quotes in extreme mode', () => {
     let object = `{ ”name”: ”Alice”, ”age”: 26, }`;
 
-    const result = parseJson.repairJson(object, { attemptRepairOfBadlyBrokenQuotes: true });
+    const result = parseJson.repairJson(object, { attemptRepairOfMismatchedQuotes: true });
     assertIsJson(result);
 });
 
 test('should cope with mismatched quotes in extreme mode - case 1', () => {
     let object = `{ "name”: ”Alice", ”age': 26, }`;
 
-    const result = parseJson.repairJson(object, { attemptRepairOfBadlyBrokenQuotes: true });
+    const result = parseJson.repairJson(object, { attemptRepairOfMismatchedQuotes: true });
     assertIsJson(result);
 });
 
 test('should cope with mismatched quotes in extreme mode - case 2', () => {
     let object = `{ "name\`: ”Alice", 'age": 26, }`;
 
-    const result = parseJson.repairJson(object, { attemptRepairOfBadlyBrokenQuotes: true });
+    const result = parseJson.repairJson(object, { attemptRepairOfMismatchedQuotes: true });
     assertIsJson(result);
 });
 
