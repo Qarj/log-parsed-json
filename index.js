@@ -90,18 +90,18 @@ function logPrettyJson(obj) {
     }
 }
 
-function repairJson(input) {
-    const parseJson = new ParseJson(input);
+function repairJson(input, options = {}) {
+    const parseJson = new ParseJson(input, options);
     return parseJson.repairJson();
 }
 
-function toArrayOfPlainStringsOrJson(input) {
-    const parseJson = new ParseJson(input);
+function toArrayOfPlainStringsOrJson(input, options = {}) {
+    const parseJson = new ParseJson(input, options);
     return parseJson.toArrayOfPlainStringsOrJson();
 }
 
-function canParseJson(input) {
-    const parseJson = new ParseJson(input);
+function canParseJson(input, options = {}) {
+    const parseJson = new ParseJson(input, options);
     try {
         parseJson.repairJson();
         return true;
@@ -110,30 +110,30 @@ function canParseJson(input) {
     }
 }
 
-function firstJson(input) {
-    const parseJson = new ParseJson(input);
+function firstJson(input, options = {}) {
+    const parseJson = new ParseJson(input, options);
     const result = parseJson.toArrayOfPlainStringsOrJson();
     for (const item of result) if (canParseJson(item)) return item;
     return '';
 }
 
-function lastJson(input) {
-    const parseJson = new ParseJson(input);
+function lastJson(input, options = {}) {
+    const parseJson = new ParseJson(input, options);
     const result = parseJson.toArrayOfPlainStringsOrJson();
     for (let i = result.length - 1; i >= 0; i--) if (canParseJson(result[i])) return result[i];
     return '';
 }
 
-function largestJson(input) {
-    const parseJson = new ParseJson(input);
+function largestJson(input, options = {}) {
+    const parseJson = new ParseJson(input, options);
     const result = parseJson.toArrayOfPlainStringsOrJson();
     let largest = '';
     for (const item of result) if (canParseJson(item) && item.length > largest.length) largest = item;
     return largest;
 }
 
-function jsonMatching(input, regex) {
-    const parseJson = new ParseJson(input);
+function jsonMatching(input, regex, options = {}) {
+    const parseJson = new ParseJson(input, options);
     const result = parseJson.toArrayOfPlainStringsOrJson();
     for (const item of result) if (canParseJson(item) && regex.test(item)) return item;
     return '';

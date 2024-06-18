@@ -1,7 +1,9 @@
 /* eslint-disable no-constant-condition */
 /* eslint-disable no-empty */
 class ParseJson {
-    constructor(input) {
+    constructor(input, options) {
+        this.attemptRepairOfBadlyBrokenQuotes = false;
+        if (options.attemptRepairOfBadlyBrokenQuotes) this.attemptRepairOfBadlyBrokenQuotes = true;
         this.debugInfo(input);
         this.inspected = this.deStringify(input);
         this.resetPointer();
@@ -22,7 +24,7 @@ class ParseJson {
         this.checkpointQuoted = this.quoted;
     }
 
-    repairJson() {
+    repairJson(options = {}) {
         this.resetPointer();
         this.eatObject();
         return this.quoted.join('');
@@ -208,6 +210,7 @@ class ParseJson {
         if (inspected[position] === '"') return '"';
         if (inspected[position] === '`') return '`';
         if (inspected[position] === '“') return '”';
+        if (inspected[position] === '”') return '“';
         if (inspected[position] === '\\' && inspected[position + 1] === '"') return '\\"';
         if (inspected[position] === '\\' && inspected[position + 1] === '\\' && inspected[position + 2] === '"')
             return '\\\\"';
@@ -216,7 +219,6 @@ class ParseJson {
 
     checkQuote(quote) {
         const { inspected, position } = this;
-        if (quote.length === 1) return inspected[position] === quote;
         if (quote.length === 2) return inspected[position] === quote[0] && inspected[position + 1] === quote[1];
         if (quote.length === 3)
             return (
@@ -224,6 +226,16 @@ class ParseJson {
                 inspected[position + 1] === quote[1] &&
                 inspected[position + 2] === quote[2]
             );
+        if (this.attemptRepairOfBadlyBrokenQuotes) {
+            return (
+                inspected[position] === "'" ||
+                inspected[position] === '"' ||
+                inspected[position] === '`' ||
+                inspected[position] === '”' ||
+                inspected[position] === '“'
+            );
+        }
+        if (quote.length === 1) return inspected[position] === quote;
         return false;
     }
 

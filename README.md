@@ -28,6 +28,10 @@ Intended to help with debugging, particulary in situations where you have for ex
 -   Escape unescaped newline `\n` in string value
 -   Deal with many escaping la-la land cases e.g. `{\"res\": \"{ \\\"a\\\": \\\"b\\\" }\"}`
 
+## Aggressive Repairs
+
+-   Mode to attempt to repair mismatched quotes as output by quantised llama3
+
 ## Installation
 
 ```bash
@@ -54,6 +58,23 @@ Gives output
 
 ```json
 { "location": "London", "title": "developer" }
+```
+
+## Enable aggressive handling of quotes
+
+```javascript
+const { firstJson } = require('log-parsed-json');
+
+const completion = `A JSON parser! { name: "Alice', ”age': 26 }
+`;
+
+console.log(firstJson(completion, { attemptRepairOfBadlyBrokenQuotes: true }));
+```
+
+Gives output
+
+```json
+{ "name": "Alice", "age": 26 }
 ```
 
 ## Usage - pretty printing JSONs found within a string
