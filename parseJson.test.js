@@ -517,13 +517,21 @@ test('should cope with mismatched quotes in extreme mode - case 2', () => {
     assertIsJson(result);
 });
 
-// test.only('should cope with pretty formatted sloping double quote mixed with regular double quote - case 3', () => {
-//     let object = `{ “name”: “Alice”, "age”: 25, }`;
+test('should cope with missing value quotes in extreme mode', () => {
+    let object = `{ "name": Alice }`;
 
-//     const result = parseJson.repairJson(object);
-//     console.log(result);
-//     assertIsJson(result);
-// });
+    const result = parseJson.repairJson(object, { attemptRepairOfMissingValueQuotes: true });
+    assertIsJson(result);
+    expect(result).toBe(`{ "name": "Alice " }`);
+});
+
+test('should still be able to eat primitives in extreme mode', () => {
+    let object = `{ "name": Alice, age: 26, isAlive: true }`;
+
+    const result = parseJson.repairJson(object, { attemptRepairOfMissingValueQuotes: true });
+    assertIsJson(result);
+    expect(result).toBe(`{ "name": "Alice", "age": 26, "isAlive": true }`);
+});
 
 test('should cope with stack overflow json', () => {
     let object = `{

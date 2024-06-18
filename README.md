@@ -30,7 +30,8 @@ Intended to help with debugging, particulary in situations where you have for ex
 
 ## Aggressive Repairs
 
--   Mode to attempt to repair mismatched quotes as output by quantised llama3
+-   Mode to attempt to repair mismatched quotes as output by quantised models like Llama3
+-   Mode to attempt repair of missing value quotes
 
 ## Installation
 
@@ -75,6 +76,22 @@ Gives output
 
 ```json
 { "name": "Alice", "age": 26 }
+```
+
+## Enable aggressive handling of missing value quotes
+
+```javascript
+const { firstJson } = require('../index.js');
+
+const completion = `A JSON parser! { "name": Alice, age: 26, isAlive: true }`;
+
+console.log(firstJson(completion, { attemptRepairOfMissingValueQuotes: true }));
+```
+
+Gives output
+
+```json
+{ "name": "Alice", "age": 26, "isAlive": true }
 ```
 
 ## Usage - pretty printing JSONs found within a string

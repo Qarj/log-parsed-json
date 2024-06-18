@@ -4,6 +4,7 @@ class ParseJson {
     constructor(input, options) {
         this.attemptRepairOfMismatchedQuotes = false;
         if (options.attemptRepairOfMismatchedQuotes) this.attemptRepairOfMismatchedQuotes = true;
+        if (options.attemptRepairOfMissingValueQuotes) this.attemptRepairOfMissingValueQuotes = true;
         this.debugInfo(input);
         this.inspected = this.deStringify(input);
         this.resetPointer();
@@ -336,7 +337,12 @@ class ParseJson {
                     this.eatString();
                     this.eatConcatenatedStrings();
                 } else {
-                    this.eatPrimitive();
+                    try {
+                        this.eatPrimitive();
+                    } catch (e) {
+                        if (this.attemptRepairOfMissingValueQuotes) this.eatUnquotedValueStringNaively();
+                        else throw e;
+                    }
                 }
         }
     }
@@ -443,6 +449,24 @@ class ParseJson {
             quoted.push(inspected[this.position]);
         }
         this.position++;
+    }
+
+    eatUnquotedValueStringNaively() {
+        this.log('eatUnquotedValueStringNaively');
+
+        this.quoted.push('"');
+        while (!this.isNaiveEndOfStringCharacter()) {
+            this.eatCharOrEscapedChar("'");
+        }
+        this.quoted.push('"');
+        this.log('eatUnquotedValueStringNaively end');
+    }
+
+    isNaiveEndOfStringCharacter() {
+        const { inspected, position } = this;
+        const value = inspected[position];
+        const endOfStringCharacters = [',', '}', ']'];
+        return endOfStringCharacters.includes(value);
     }
 
     eatArray() {
