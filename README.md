@@ -281,7 +281,7 @@ npm install -g log-parsed-json
 
 Now you can pipe to `pretty`
 
-```bash
+```sh
 echo abc { a: 2 } abc | pretty
 
 curl 'https://jsonplaceholder.typicode.com/todos/1' | pretty
