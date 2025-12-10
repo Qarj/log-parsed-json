@@ -1,7 +1,6 @@
 # log-parsed-json
 
 ![Tests](https://github.com/Qarj/log-parsed-json/workflows/Tests/badge.svg)
-![Publish to npmjs](https://github.com/Qarj/log-parsed-json/workflows/Publish%20to%20npmjs/badge.svg)
 
 Pretty prints JSON like objects found in the string passed to it.
 
