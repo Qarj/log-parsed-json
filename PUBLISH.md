@@ -17,6 +17,8 @@ git push
 
 ## Option B: One-command tag-based release (intentional publish)
 
+Ensure all changes are committed, then run:
+
 ```sh
 npm version patch -m "Release %s"
 git push --follow-tags
