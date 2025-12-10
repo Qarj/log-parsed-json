@@ -3,6 +3,9 @@ name: Publish Package
 
 on:
   push:
+    branches:
+      - 'main'
+      - 'master'
     tags:
       - 'v*'
   release:
@@ -47,11 +50,49 @@ jobs:
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
+      - name: Read package version
+        id: read_version
+        run: |
+          echo "PKG_VERSION=$(node -p \"require('./package.json').version\")" >> "$GITHUB_ENV"
+          echo "pkg_version=$PKG_VERSION" >> "$GITHUB_OUTPUT"
+      - name: Get published version from npm
+        id: get_published
+        run: |
+          set +e
+          PUBLISHED="$(npm view log-parsed-json version 2>/dev/null || echo '')"
+          set -e
+          echo "PUBLISHED_VERSION=$PUBLISHED" >> "$GITHUB_ENV"
+          echo "published_version=$PUBLISHED" >> "$GITHUB_OUTPUT"
+      - name: Decide whether to publish
+        id: decide
+        run: |
+          echo "event_name=${{ github.event_name }}"
+          echo "ref=${{ github.ref }}"
+          echo "pkg_version=${{ steps.read_version.outputs.pkg_version }}"
+          echo "published_version=${{ steps.get_published.outputs.published_version }}"
+          SHOULD="false"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            SHOULD="true"
+          elif [[ "${{ github.event_name }}" == "release" ]]; then
+            SHOULD="true"
+          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            SHOULD="true"
+          elif [[ "${{ github.event_name }}" == "push" ]] && ([[ "${{ github.ref }}" == "refs/heads/main" ]] || [[ "${{ github.ref }}" == "refs/heads/master" ]]); then
+            if [[ "${{ steps.read_version.outputs.pkg_version }}" != "${{ steps.get_published.outputs.published_version }}" ]]; then
+              SHOULD="true"
+            fi
+          fi
+          echo "should_publish=$SHOULD" >> "$GITHUB_OUTPUT"
+          echo "SHOULD_PUBLISH=$SHOULD" >> "$GITHUB_ENV"
       - name: Update npm to latest (ensure >= 11.5.1)
+        if: steps.decide.outputs.should_publish == 'true'
         run: |
           echo "npm before update: $(npm -v || true)"
           npm install -g npm@latest
           echo "npm after update: $(npm -v)"
       - run: npm install
+        if: steps.decide.outputs.should_publish == 'true'
       - run: npm run build --if-present
+        if: steps.decide.outputs.should_publish == 'true'
       - run: npm publish
+        if: steps.decide.outputs.should_publish == 'true'
