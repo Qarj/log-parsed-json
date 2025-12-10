@@ -3,9 +3,6 @@
 ## Option A: just push
 
 -   Edit package.json version (or use npm to bump without tagging).
--   Commit and push to main/master. The workflow checks:
-    -   local package.json version vs npm’s current version,
-    -   only publishes when they differ.
 
 Example:
 

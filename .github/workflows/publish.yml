@@ -8,6 +8,8 @@ on:
       - 'master'
     tags:
       - 'v*'
+    paths-ignore:
+      - 'other-projects/**'
   release:
     types: [published]
   workflow_dispatch:
@@ -96,3 +98,6 @@ jobs:
         if: steps.decide.outputs.should_publish == 'true'
       - run: npm publish
         if: steps.decide.outputs.should_publish == 'true'
+
+
+
