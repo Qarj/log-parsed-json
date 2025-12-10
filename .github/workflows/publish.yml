@@ -3,42 +3,35 @@ name: Publish Package
 
 on:
   push:
-    branches:
-      - 'main'
-      - 'master'
     tags:
       - 'v*'
-    paths-ignore:
-      - 'other-projects/**'
-  release:
-    types: [published]
   workflow_dispatch:
 
 permissions:
   id-token: write
   contents: read
 
+concurrency:
+  group: log-parsed-json-publish-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: Tests
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Debug context
-        run: |
-          echo "event_name=${{ github.event_name }}"
-          echo "ref=${{ github.ref }}"
-          echo "workflow=${{ github.workflow }}"
-          echo "run_id=${{ github.run_id }}"
       - run: npm install
       - run: npm test
 
   publish:
-    needs: [test]
     name: Publish to npmjs
+    needs: [test]
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,52 +39,52 @@ jobs:
         run: |
           echo "event_name=${{ github.event_name }}"
           echo "ref=${{ github.ref }}"
-          echo "repository=${{ github.repository }}"
-          echo "actor=${{ github.actor }}"
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
-      - name: Read package version
-        id: read_version
+      - name: Read package name and version
+        id: read_meta
         run: |
-          echo "PKG_VERSION=$(node -p \"require('./package.json').version\")" >> "$GITHUB_ENV"
-          echo "pkg_version=$PKG_VERSION" >> "$GITHUB_OUTPUT"
+          PKG_NAME=$(node -p "require('./package.json').name")
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          echo "PKG_NAME=$PKG_NAME" >> "$GITHUB_ENV"
+          echo "PKG_VERSION=$PKG_VERSION" >> "$GITHUB_ENV"
       - name: Get published version from npm
         id: get_published
         run: |
           set +e
-          PUBLISHED="$(npm view log-parsed-json version 2>/dev/null || echo '')"
+          PUBLISHED="$(npm view \"${{ env.PKG_NAME }}\" version 2>/dev/null || echo '')"
           set -e
-          echo "PUBLISHED_VERSION=$PUBLISHED" >> "$GITHUB_ENV"
           echo "published_version=$PUBLISHED" >> "$GITHUB_OUTPUT"
       - name: Decide whether to publish
         id: decide
         run: |
-          echo "event_name=${{ github.event_name }}"
-          echo "ref=${{ github.ref }}"
-          echo "pkg_version=${{ steps.read_version.outputs.pkg_version }}"
+          echo "pkg_name=${{ env.PKG_NAME }}"
+          echo "pkg_version=${{ env.PKG_VERSION }}"
           echo "published_version=${{ steps.get_published.outputs.published_version }}"
           SHOULD="false"
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             SHOULD="true"
-          elif [[ "${{ github.event_name }}" == "release" ]]; then
-            SHOULD="true"
           elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
-            SHOULD="true"
-          elif [[ "${{ github.event_name }}" == "push" ]] && ([[ "${{ github.ref }}" == "refs/heads/main" ]] || [[ "${{ github.ref }}" == "refs/heads/master" ]]); then
-            if [[ "${{ steps.read_version.outputs.pkg_version }}" != "${{ steps.get_published.outputs.published_version }}" ]]; then
+            if [[ "${{ env.PKG_VERSION }}" != "${{ steps.get_published.outputs.published_version }}" ]]; then
               SHOULD="true"
+            else
+              echo "Version already published; skipping."
             fi
           fi
           echo "should_publish=$SHOULD" >> "$GITHUB_OUTPUT"
-          echo "SHOULD_PUBLISH=$SHOULD" >> "$GITHUB_ENV"
       - name: Update npm to latest (ensure >= 11.5.1)
         if: steps.decide.outputs.should_publish == 'true'
         run: |
           echo "npm before update: $(npm -v || true)"
           npm install -g npm@latest
           echo "npm after update: $(npm -v)"
+      - name: Prefer OIDC over legacy token
+        if: steps.decide.outputs.should_publish == 'true'
+        run: |
+          echo "Clearing NODE_AUTH_TOKEN to ensure OIDC is used"
+          echo "NODE_AUTH_TOKEN=" >> "$GITHUB_ENV"
       - run: npm install
         if: steps.decide.outputs.should_publish == 'true'
       - run: npm run build --if-present
