@@ -5,10 +5,9 @@ on:
   push:
     tags:
       - 'v*'
-    branches:
-      - 'main'
-      - 'master'
-      - 'releases/**'
+  release:
+    types: [published]
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -23,6 +22,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Debug context
+        run: |
+          echo "event_name=${{ github.event_name }}"
+          echo "ref=${{ github.ref }}"
+          echo "workflow=${{ github.workflow }}"
+          echo "run_id=${{ github.run_id }}"
       - run: npm install
       - run: npm test
 
@@ -30,15 +35,23 @@ jobs:
     needs: [test]
     name: Publish to npmjs
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v4
+      - name: Debug context
+        run: |
+          echo "event_name=${{ github.event_name }}"
+          echo "ref=${{ github.ref }}"
+          echo "repository=${{ github.repository }}"
+          echo "actor=${{ github.actor }}"
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
       - name: Update npm to latest (ensure >= 11.5.1)
-        run: npm install -g npm@latest
+        run: |
+          echo "npm before update: $(npm -v || true)"
+          npm install -g npm@latest
+          echo "npm after update: $(npm -v)"
       - run: npm install
       - run: npm run build --if-present
       - run: npm publish
