@@ -1,37 +1,44 @@
 ---
-name: Publish to npmjs
+name: Publish Package
 
 on:
-    push:
-        branches:
-            - 'main'
-            - 'master'
-            - 'releases/**'
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - 'main'
+      - 'master'
+      - 'releases/**'
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
-    test:
-        name: Tests
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
-              with:
-                  node-version: '16'
-            - run: npm install
-            - run: npm test
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install
+      - run: npm test
 
-    publish:
-        needs: [test]
-        name: Publish to npmjs
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
-            # Setup .npmrc file to publish to npm
-            - uses: actions/setup-node@v3
-              with:
-                  node-version: '16.x'
-                  registry-url: 'https://registry.npmjs.org'
-            - run: npm ci
-            - run: npm publish
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  publish:
+    needs: [test]
+    name: Publish to npmjs
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Update npm to latest (ensure >= 11.5.1)
+        run: npm install -g npm@latest
+      - run: npm install
+      - run: npm run build --if-present
+      - run: npm publish

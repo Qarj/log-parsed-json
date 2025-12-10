@@ -1,6 +1,6 @@
 {
     "name": "log-parsed-json",
-    "version": "0.0.59",
+    "version": "0.0.60",
     "bin": {
         "pretty": "./pretty.js"
     },
