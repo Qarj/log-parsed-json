@@ -65,7 +65,9 @@ class ParseJson {
                 } catch (e) {
                     if (this.debug)
                         console.log('error root eat object', e, this.position, this.inspected[this.position]);
-                    this.quoted.push['{'];
+                    // Reset any partial output collected during failed object parse
+                    this.quoted = [];
+                    this.quoted.push('{');
                     this.position = recoveryPosition;
                 }
             }
@@ -283,7 +285,11 @@ class ParseJson {
         if (this.inspected[this.position] === '[') return this.eatNullKey();
         this.throwIfJsonSpecialCharacter(this.inspected[this.position]);
         this.quoted.push('"');
-        while (this.inspected[this.position] !== ':' && this.inspected[this.position] !== ' ') {
+        while (
+            this.position < this.inspected.length &&
+            this.inspected[this.position] !== ':' &&
+            this.inspected[this.position] !== ' '
+        ) {
             this.log('eatUnquotedKey loop');
             if (this.getQuote()) throw new Error('Unexpected quote in unquoted key');
             this.quoted.push(this.inspected[this.position]);
@@ -297,13 +303,21 @@ class ParseJson {
         this.log('eatNullKey');
         if (inspected[this.position] !== '[') throw new Error('Expected open bracket');
         this.position++;
-        if (inspected[this.position].toLowerCase() !== 'n') throw new Error('Expected n');
+
+        let ch = inspected[this.position];
+        if (!ch || ch.toLowerCase() !== 'n') throw new Error('Expected n');
         this.position++;
-        if (inspected[this.position].toLowerCase() !== 'u') throw new Error('Expected u');
+
+        ch = inspected[this.position];
+        if (!ch || ch.toLowerCase() !== 'u') throw new Error('Expected u');
         this.position++;
-        if (inspected[this.position].toLowerCase() !== 'l') throw new Error('Expected l');
+
+        ch = inspected[this.position];
+        if (!ch || ch.toLowerCase() !== 'l') throw new Error('Expected l');
         this.position++;
-        if (inspected[this.position].toLowerCase() !== 'l') throw new Error('Expected l');
+
+        ch = inspected[this.position];
+        if (!ch || ch.toLowerCase() !== 'l') throw new Error('Expected l');
         this.position++;
         if (inspected[this.position] !== ']') throw new Error('Expected close bracket');
         this.position++;
@@ -362,6 +376,11 @@ class ParseJson {
         this.position = virtualPosition + 1;
         this.eatWhitespace();
         this.quoted.pop(); // remove last quote
+        // Ensure there is a string after '+'
+        if (!this.getQuote()) {
+            throw new Error('Expected string after +');
+        }
+
 
         this.eatStringCore();
 
@@ -631,7 +650,11 @@ class ParseJson {
         this.setCheckpoint();
         if (debug) console.log('eatPrimitive', position, inspected[position]);
 
-        const lowerChar = inspected[position].toLowerCase();
+        const currentChar = inspected[position];
+        if (!currentChar) {
+            throw new Error('Primitive not recognized, must start with f, t, n, or be numeric');
+        }
+        const lowerChar = currentChar.toLowerCase();
         if (lowerChar === 'f' || lowerChar === 't' || lowerChar === 'n') {
             this.eatKeyword();
         } else if (this.isNumberStartChar(lowerChar)) {

@@ -1028,6 +1028,111 @@ test('should not treat nested arrays as index labels when starting with "["', ()
     assertIsJson(result);
 });
 
+test('should strip bracketed array index labels using ":" including trailing comma', () => {
+    const scenario = `{
+arr: [
+  [0] : "a",
+  [1] : "b",
+]
+}`;
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe('{ "arr": ["a", "b"] }');
+    assertIsJson(result);
+});
+
+test('should insert missing commas with bracketed ":" index labels', () => {
+    const scenario = `{
+arr: [
+  [0] :"a"
+  [1] :"b"
+]
+}`;
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe('{ "arr": ["a", "b"] }');
+    assertIsJson(result);
+});
+
+test('should handle nested arrays with bracketed ":" index labels', () => {
+    const scenario = `{
+arr: [
+  [0] : [
+    [0] : 1
+    [1] : 2
+  ]
+  [1] : [
+    [0] : 3,
+    [1] : 4
+  ]
+]
+}`;
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe('{ "arr": [[1, 2], [3, 4]] }');
+    assertIsJson(result);
+});
+
+test('should concatenate strings across newline after plus', () => {
+    const scenario = '{ "abc": "hello" + \n "world" }';
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe('{ "abc": "helloworld" }');
+    assertIsJson(result);
+});
+
+test('should throw "Expected n" when [null] key is truncated right after "["', () => {
+    const scenario = '{ [';
+    expect(() => {
+        parseJson.repairJson(scenario);
+    }).toThrow('Expected n');
+});
+
+test('should throw "Expected u" when [null] key is truncated after "n"', () => {
+    const scenario = '{ [n';
+    expect(() => {
+        parseJson.repairJson(scenario);
+    }).toThrow('Expected u');
+});
+
+test('should throw "Expected l" when [null] key is truncated after "nu"', () => {
+    const scenario = '{ [nu';
+    expect(() => {
+        parseJson.repairJson(scenario);
+    }).toThrow('Expected l');
+});
+
+test('should throw "Expected close bracket" when [null] key is missing closing bracket', () => {
+    const scenario = '{ [null';
+    expect(() => {
+        parseJson.repairJson(scenario);
+    }).toThrow('Expected close bracket');
+});
+
+test('should preserve stray "{" when object parse fails in toArrayOfPlainStringsOrJson', () => {
+    const scenario = 'before { not json';
+    const result = parseJson.toArrayOfPlainStringsOrJson(scenario);
+    expect(result[0]).toBe('before ');
+    expect(result[1]).toBe('{');
+    expect(result[2]).toBe(' not json');
+});
+
+test('should throw a helpful error instead of TypeError when array ends after a comma', () => {
+    const scenario = '{ arr: [1,';
+    expect(() => {
+        parseJson.repairJson(scenario);
+    }).toThrow('Primitive not recognized, must start with f, t, n, or be numeric');
+});
+
+test('should throw "Expected colon" when input ends after an unquoted key', () => {
+    const scenario = '{ onlyKey';
+    expect(() => {
+        parseJson.repairJson(scenario);
+    }).toThrow('Expected colon');
+});
+
+test('should throw clear error when string concatenation is missing the right-hand string', () => {
+    const scenario = '{ "abc": "a" + }';
+    expect(() => {
+        parseJson.repairJson(scenario);
+    }).toThrow('Expected string after +');
+});
 
 function assertIsJson(json) {
     let isValidJson = false;
