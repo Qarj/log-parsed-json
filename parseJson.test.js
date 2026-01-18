@@ -740,6 +740,99 @@ test('should repair basdly mis-escaped JSON', () => {
     expect(result).toBe(`{ "res": "{ \\"a\\": \\"b\\" }" }`);
     assertIsJson(result);
 });
+test('should strip array index labels when items are well-formed', () => {
+    const scenario = `{
+        "requirements": [
+            0: { "requirement_index": 0, "importance": "very important" },
+            1: { "requirement_index": 1, "importance": "sort of important" }
+        ]
+    }`;
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe(
+        '{ "requirements": [{ "requirement_index": 0, "importance": "very important" }, { "requirement_index": 1, "importance": "sort of important" }] }',
+    );
+    assertIsJson(result);
+});
+
+test('should handle array index labels with missing commas between items', () => {
+    const scenario = `{
+        "requirements": [
+            0: { "requirement_index": 0, "importance": "very important" }
+            1: { "requirement_index": 1, "importance": "sort of important" }
+        ]
+    }`;
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe(
+        '{ "requirements": [{ "requirement_index": 0, "importance": "very important" }, { "requirement_index": 1, "importance": "sort of important" }] }',
+    );
+    assertIsJson(result);
+});
+
+test('should handle array index labels with missing commas inside object items', () => {
+    const scenario = `{
+        "requirements": [
+            0: { "requirement_index": 0
+                 "importance": "mandatory" },
+            1: { "requirement_index": 1
+                 "importance": "essential" }
+        ]
+    }`;
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe(
+        '{ "requirements": [{ "requirement_index": 0, "importance": "mandatory" }, { "requirement_index": 1, "importance": "essential" }] }',
+    );
+    assertIsJson(result);
+});
+
+test('should repair messy logged array with index labels and missing commas', () => {
+    const scenario = `{
+requirements: [
+0: {
+requirement_index: 0
+importance: "very important"
+}
+1: {
+requirement_index: 1
+importance: "sort of important"
+}
+2: {
+requirement_index: 2
+importance: "maybe important"
+}
+3: {
+requirement_index: 3
+importance: "somewhat important"
+}
+4: {
+requirement_index: 4
+importance: "yes"
+}
+]
+}`;
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe(
+        '{ "requirements": [{ "requirement_index": 0, "importance": "very important" }, { "requirement_index": 1, "importance": "sort of important" }, { "requirement_index": 2, "importance": "maybe important" }, { "requirement_index": 3, "importance": "somewhat important" }, { "requirement_index": 4, "importance": "yes" }] }',
+    );
+    assertIsJson(result);
+});
+
+test('should handle arrays within arrays using index labels', () => {
+    const scenario = `{
+arr: [
+  0: [
+    0: 1
+    1: 2
+  ]
+  1: [
+    0: 3
+    1: 4
+  ]
+]
+}`;
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe('{ "arr": [[1, 2], [3, 4]] }');
+    assertIsJson(result);
+});
 
 function assertIsJson(json) {
     let isValidJson = false;

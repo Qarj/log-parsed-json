@@ -477,6 +477,7 @@ class ParseJson {
 
         while (true) {
             this.eatWhitespace();
+            this.eatArrayIndexOptional();
             this.eatCircularOptional();
             if (this.inspected[this.position] === ']') {
                 this.removeTrailingCommaIfPresent();
@@ -494,6 +495,34 @@ class ParseJson {
         }
         this.eatCloseBracket();
     }
+    // In some logged outputs, arrays are shown with index labels like `0:` `1:` before each element.
+    // This method detects and skips such labels within arrays.
+    eatArrayIndexOptional() {
+        const { inspected } = this;
+        let pos = this.position;
+        // Must start with a digit
+        if (!/[0-9]/.test(inspected[pos])) return false;
+
+        // Consume all digits
+        while (/[0-9]/.test(inspected[pos])) pos++;
+
+        // Skip any whitespace
+        while (/\s/.test(inspected[pos])) pos++;
+
+        // Require a colon to treat as an index label
+        if (inspected[pos] !== ':') return false;
+
+        // Skip colon
+        pos++;
+
+        // Skip any whitespace after colon
+        while (/\s/.test(inspected[pos])) pos++;
+
+        // Advance parser position to the start of the actual value
+        this.position = pos;
+        return true;
+    }
+
 
     removeTrailingCommaIfPresent() {
         if (this.quotedLastCommaPosition !== undefined) {
