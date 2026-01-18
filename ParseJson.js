@@ -495,7 +495,7 @@ class ParseJson {
         }
         this.eatCloseBracket();
     }
-    // In some logged outputs, arrays are shown with index labels like `0:` `1:` before each element.
+    // In some logged outputs, arrays are shown with index labels like `0:` `1:`, `0 =>`, or `0 =` before each element.
     // This method detects and skips such labels within arrays.
     eatArrayIndexOptional() {
         const { inspected } = this;
@@ -509,20 +509,33 @@ class ParseJson {
         // Skip any whitespace
         while (/\s/.test(inspected[pos])) pos++;
 
-        // Require a colon to treat as an index label
-        if (inspected[pos] !== ':') return false;
+        // Allow ':', '=' or '=>' as index label separators
+        if (inspected[pos] === ':') {
+            // Skip colon
+            pos++;
+            // Skip any whitespace after colon
+            while (/\s/.test(inspected[pos])) pos++;
+            this.position = pos;
+            return true;
+        }
 
-        // Skip colon
-        pos++;
+        if (inspected[pos] === '=') {
+            // Skip '='
+            pos++;
+            // Skip whitespace after '='
+            while (/\s/.test(inspected[pos])) pos++;
+            // Optionally skip '>' (with or without surrounding whitespace)
+            if (inspected[pos] === '>') {
+                pos++;
+                while (/\s/.test(inspected[pos])) pos++;
+            }
+            this.position = pos;
+            return true;
+        }
 
-        // Skip any whitespace after colon
-        while (/\s/.test(inspected[pos])) pos++;
-
-        // Advance parser position to the start of the actual value
-        this.position = pos;
-        return true;
+        // Not an index label
+        return false;
     }
-
 
     removeTrailingCommaIfPresent() {
         if (this.quotedLastCommaPosition !== undefined) {

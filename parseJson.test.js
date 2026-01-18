@@ -833,6 +833,110 @@ arr: [
     expect(result).toBe('{ "arr": [[1, 2], [3, 4]] }');
     assertIsJson(result);
 });
+test('should strip array index labels using "=>" when items are well-formed', () => {
+    const scenario = `{
+        "requirements": [
+            0 => { "requirement_index": 0, "importance": "mandatory" },
+            1 => { "requirement_index": 1, "importance": "essential" }
+        ]
+    }`;
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe(
+        '{ "requirements": [{ "requirement_index": 0, "importance": "mandatory" }, { "requirement_index": 1, "importance": "essential" }] }',
+    );
+    assertIsJson(result);
+});
+
+test('should strip array index labels using "=" when items are well-formed', () => {
+    const scenario = `{
+        "requirements": [
+            0 = { "requirement_index": 0, "importance": "mandatory" },
+            1 = { "requirement_index": 1, "importance": "essential" }
+        ]
+    }`;
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe(
+        '{ "requirements": [{ "requirement_index": 0, "importance": "mandatory" }, { "requirement_index": 1, "importance": "essential" }] }',
+    );
+    assertIsJson(result);
+});
+
+test('should handle array index labels "=>" with missing commas between items', () => {
+    const scenario = `{
+        "requirements": [
+            0 => { "requirement_index": 0, "importance": "mandatory" }
+            1 => { "requirement_index": 1, "importance": "essential" }
+        ]
+    }`;
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe(
+        '{ "requirements": [{ "requirement_index": 0, "importance": "mandatory" }, { "requirement_index": 1, "importance": "essential" }] }',
+    );
+    assertIsJson(result);
+});
+
+test('should handle whitespace variations around "=>" and "=" index labels', () => {
+    const scenario = `{
+arr: [
+  0   =>  "a"
+  1= > "b"
+  2 =   >  "c"
+]
+}`;
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe('{ "arr": ["a", "b", "c"] }');
+    assertIsJson(result);
+});
+
+test('should handle multi-digit index labels with "=>"', () => {
+    const scenario = `{
+arr: [
+  10 => 100,
+  11 => 200
+]
+}`;
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe('{ "arr": [100, 200] }');
+    assertIsJson(result);
+});
+
+test('should handle nested arrays with "=>" and "=" labels', () => {
+    const scenario = `{
+arr: [
+  0 => [
+    0 = 1
+    1 => 2
+  ]
+  1 = [
+    0 => 3,
+    1 = 4
+  ]
+]
+}`;
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe('{ "arr": [[1, 2], [3, 4]] }');
+    assertIsJson(result);
+});
+
+test('should handle mixed index label separators ":" "=>" "=" in the same array', () => {
+    const scenario = `{
+arr: [
+  0: "a",
+  1 => "b"
+  2 = "c"
+]
+}`;
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe('{ "arr": ["a", "b", "c"] }');
+    assertIsJson(result);
+});
+
+test('should not treat plain numeric elements as index labels', () => {
+    const scenario = '{ arr: [0, 1, 2] }';
+    const result = parseJson.repairJson(scenario);
+    expect(result).toBe('{ "arr": [0, 1, 2] }');
+    assertIsJson(result);
+});
 
 function assertIsJson(json) {
     let isValidJson = false;
