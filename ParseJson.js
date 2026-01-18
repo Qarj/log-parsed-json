@@ -495,11 +495,50 @@ class ParseJson {
         }
         this.eatCloseBracket();
     }
-    // In some logged outputs, arrays are shown with index labels like `0:` `1:`, `0 =>`, or `0 =` before each element.
+    // In some logged outputs, arrays are shown with index labels like:
+    // - 0:
+    // - 0 =>
+    // - 0 =
+    // - [0] =>    (PHP var_dump/print_r style)
     // This method detects and skips such labels within arrays.
     eatArrayIndexOptional() {
         const { inspected } = this;
         let pos = this.position;
+        // Handle PHP-style bracketed index labels: [0] => value
+        if (inspected[pos] === '[') {
+            let p = pos + 1;
+            // Skip whitespace after '['
+            while (/\s/.test(inspected[p])) p++;
+            // Must have at least one digit
+            if (/[0-9]/.test(inspected[p])) {
+                while (/[0-9]/.test(inspected[p])) p++;
+                // Skip whitespace before ']'
+                while (/\s/.test(inspected[p])) p++;
+                if (inspected[p] === ']') {
+                    p++;
+                    // Skip whitespace after ']'
+                    while (/\s/.test(inspected[p])) p++;
+                    // Accept ':' or '=' (optionally followed by '>') as separators
+                    if (inspected[p] === ':') {
+                        p++;
+                        while (/\s/.test(inspected[p])) p++;
+                        this.position = p;
+                        return true;
+                    }
+                    if (inspected[p] === '=') {
+                        p++;
+                        while (/\s/.test(inspected[p])) p++;
+                        if (inspected[p] === '>') {
+                            p++;
+                            while (/\s/.test(inspected[p])) p++;
+                        }
+                        this.position = p;
+                        return true;
+                    }
+                }
+            }
+            // Not a bracketed label we understand; fall through without consuming
+        }
         // Must start with a digit
         if (!/[0-9]/.test(inspected[pos])) return false;
 

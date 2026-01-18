@@ -25,6 +25,25 @@ Intended to help with debugging, particulary in situations where you have for ex
 -   Remove additional double quote at start of key that gpt-3.5-turbo sometimes adds
 -   Escape unescaped newline `\n` in string value
 -   Deal with many escaping la-la land cases e.g. `{\"res\": \"{ \\\"a\\\": \\\"b\\\" }\"}`
+-   Ignore array index labels sometimes printed by loggers: `0:`, `0 =>`, `0 =`, `[0] =>`
+Example of repairing logged array index labels:
+
+```txt
+{
+  arr: [
+    0: "a"
+    1 => "b"
+    [2] => "c"
+  ]
+}
+```
+
+Result
+
+```txt
+{ "arr": ["a", "b", "c"] }
+```
+
 
 ## Aggressive Repairs
 
